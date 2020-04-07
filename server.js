@@ -13,11 +13,14 @@ app.get('/', function(req, res){
 
 io.on('connection', function(socket){
 
+    
     socket.on('chat message', function(msg){
         
         const newMessage = verbsChanger(msg);
 
-        io.emit('chat message', newMessage);
+        // socket.emit('chat message', {newMessage, name:"jij"})
+        socket.emit('chat message', newMessage)
+        socket.broadcast.emit('chat message', newMessage);
         console.log('message: ' + newMessage);
       });
 
@@ -32,13 +35,10 @@ function verbsChanger(lastMessage){
         "coderen", "vallen", "vliegen", "werken", "zwemmen", "reizen",
         "winnen", "koken", "springen", "sturen", "spelen", "slapen",
         "praten", "lezen", "wassen", "bijten", "bouwen", "typen",
-        "gamen", "niezen", "ademen",
+        "gamen", "niezen", "ademen", "hacken", "deployen", 
     ];
-    // console.log("Deze function doet het!");
-    //const lastMessage = document.getElementById('messages').lastChild;
 
     // laatste bericht die is gestuurd (nog uit de chat halen)
-    //const lastMessage = "Vanaf vandaag ben ik gestopt met gamen";
     console.log(lastMessage);
 
     //bericht opsplitsen in een array
