@@ -1,9 +1,13 @@
 const express = require('express');
 const app = express();
 const host = '0.0.0.0';
-const port = process.env.PORT || 5000;
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const port = process.env.PORT || 3000;
+
+const server = app.listen(port, host, function() {
+    console.log(`Example app listening on port ${port}!`);
+});
+
+const io = require('socket.io').listen(server);
 
 app.use(express.static(__dirname + '/public'));
 
@@ -19,8 +23,9 @@ io.on('connection', function(socket){
         
         const newMessage = verbsChanger(msg);
 
-        // socket.emit('chat message', {newMessage, name:"jij"})
+        // // socket.emit('chat message', {newMessage, name:"jij"})
         socket.emit('chat message', newMessage)
+        // socket.broadcast.emit('chat message', newMessage);
         socket.broadcast.emit('chat message', newMessage);
         console.log('message: ' + newMessage);
       });
@@ -89,6 +94,3 @@ function verbsChanger(lastMessage){
     };
 };
 
-app.listen(port, host, function() {
-    console.log(`Example app listening on port ${port}!`);
-});
