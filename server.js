@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const host = '0.0.0.0';
+const port = process.env.PORT || 5000;
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
@@ -88,6 +89,6 @@ function verbsChanger(lastMessage){
     };
 };
 
-http.listen(port, function(){
-    console.log('listening on *:3000');
+app.listen(port, host, function() {
+    console.log(`Example app listening on port ${port}!`);
 });
