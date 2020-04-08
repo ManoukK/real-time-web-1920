@@ -1,12 +1,26 @@
+
 const socket = io();
+socket.emit('connect', 1);
 
-socket.on('connect', function(socket){
+const setUsername = document.getElementById("usernameForm");
+setUsername.addEventListener('submit', usernameInput);
 
+function usernameInput(event){
+    event.preventDefault();
+    const usernameInputField = document.getElementById("username");
+    console.log(usernameInputField.value);
+
+    //emit stuurt naar de server
+    socket.emit('set user', usernameInputField.value);
+};
+
+socket.on('server message', function(msg){
+    const messages = document.getElementById("messages");
+    messages.insertAdjacentHTML("beforeend", `<li class="serverMSG">${msg}</li>`);
 });
 
-//naam veranderen
-const inputForm = document.getElementById("messageForm");
-inputForm.addEventListener('submit', inputText);
+const msgForm = document.getElementById("messageForm");
+msgForm.addEventListener('submit', inputText);
 
 function inputText(event){
     event.preventDefault();
@@ -19,6 +33,6 @@ function inputText(event){
     //luistert naar de server (berichten)
     socket.on('chat message', function(msg){
         const messages = document.getElementById("messages");
-        messages.insertAdjacentHTML("beforeend", `<li>${msg}</li>`);
-        });
+        messages.insertAdjacentHTML("beforeend", `<li class="chatMSG">${msg}</li>`);
+    });
 }

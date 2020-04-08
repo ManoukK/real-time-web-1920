@@ -17,21 +17,27 @@ app.get('/', function(req, res){
 
 
 io.on('connection', function(socket){
+    let userName = "onbekend";
 
-    
-    socket.on('chat message', function(msg){
-        
+    socket.on('set user', function(id){
+        const oldUsername = userName;
+        userName = id;
+        console.log('server message', `SERVER: Welcome ${userName}!`);
+        socket.emit('server message', `SERVER: You've changed your name to ${userName}!`);
+        socket.broadcast.emit('server message', `SERVER: User ${oldUsername} changed their name to ${userName}`);
+    })
+
+    console.log(`user connected ${userName}`);
+    socket.emit('server message', `SERVER: Welcome ${userName}!`);
+
+    socket.on('chat message', function(msg){    
         const newMessage = verbsChanger(msg);
-
-        // // socket.emit('chat message', {newMessage, name:"jij"})
-        socket.emit('chat message', newMessage)
-        // socket.broadcast.emit('chat message', newMessage);
-        socket.broadcast.emit('chat message', newMessage);
-        console.log('message: ' + newMessage);
-      });
+        io.emit('chat message', `${userName}: ${newMessage}`)
+        console.log('message from user', `${userName}: ${newMessage}`);
+    });
 
     socket.on('disconnect', function(){
-        console.log('user disconnected');
+        console.log(`user disconnected ${userName}`);
     });
 });
 
@@ -41,7 +47,7 @@ function verbsChanger(lastMessage){
         "coderen", "vallen", "vliegen", "werken", "zwemmen", "reizen",
         "winnen", "koken", "springen", "sturen", "spelen", "slapen",
         "praten", "lezen", "wassen", "bijten", "bouwen", "typen",
-        "gamen", "niezen", "ademen", "hacken", "deployen", 
+        "gamen",  "ademen", "hacken", "deployen", "boos worden op designers", "lachen",
     ];
 
     // laatste bericht die is gestuurd (nog uit de chat halen)
@@ -88,8 +94,6 @@ function verbsChanger(lastMessage){
         //lastMessage.innerHTML = messageToString;
 
     } else { 
-            output = false; 
-            console.log(output);
             return lastMessage;
     };
 };
