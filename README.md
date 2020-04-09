@@ -16,6 +16,14 @@ Mijn feature is dat als jij een bepaald werkwoord stuurt in de chat dat dit woor
 9. De zin word verstuurd naar de client, in een list item gezet en in de chat geplaatst. 
 
 ## (?)
+### set user
+
+### chat message
+
+### disconnect
+
+### server message
+
 
 ## Bronnen 
 - Server berichten en username dankzij Guido en het hoorcollege
