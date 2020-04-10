@@ -44,12 +44,13 @@ io.on('connection', function(socket){
 
 function verbsChanger(lastMessage){
     const verbs = [
-        "beginnen", "denken", "douchen", "eten", "lopen", "studeren", 
-        "coderen", "vallen", "vliegen", "werken", "zwemmen", "reizen",
-        "winnen", "koken", "springen", "sturen", "spelen", "slapen",
-        "praten", "lezen", "wassen", "bijten", "bouwen", "typen",
+       "denken", "douchen", "eten", "lopen", "studeren", 
+        "coderen", "code bij elkaar googlen", "binnen blijven", "werken", "zwemmen", "reizen",
+        "winnen", "koken", "springen", "bugs oplossen", "spelen", "slapen",
+        "praten", "broodjes smeren", "wc papier hamsteren", "readme's schrijven", "typen",
         "gamen",  "ademen", "hacken", "deployen", "boos worden op designers", "lachen",
     ];
+    //"wassen", "bijten", "vallen", "sturen", "vliegen", "beginnen", "lezen", 
 
     // laatste bericht die is gestuurd (nog uit de chat halen)
     console.log(lastMessage);
