@@ -19,16 +19,16 @@ app.get('/', function(req, res){
 io.on('connection', function(socket){
     let userName = "onbekend";
 
+    console.log(`user connected ${userName}`);
+    socket.emit('server message', `SERVER: Welcome ${userName}!`);
+    socket.broadcast.emit('server message', `SERVER: ${userName} is now online!`);
+
     socket.on('set user', function(id){
         const oldUsername = userName;
         userName = id;
-        console.log('server message', `SERVER: Welcome ${userName}!`);
         socket.emit('server message', `SERVER: You've changed your name to ${userName}!`);
         socket.broadcast.emit('server message', `SERVER: User ${oldUsername} changed their name to ${userName}`);
     })
-
-    console.log(`user connected ${userName}`);
-    socket.emit('server message', `SERVER: Welcome ${userName}!`);
 
     socket.on('chat message', function(msg){    
         const newMessage = verbsChanger(msg);
@@ -37,6 +37,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('disconnect', function(){
+        socket.broadcast.emit('server message', `${userName} disconnected`)
         console.log(`user disconnected ${userName}`);
     });
 });
