@@ -45,7 +45,7 @@ io.on('connection', function(socket){
 function verbsChanger(lastMessage){
     const verbs = [
        "denken", "douchen", "eten", "lopen", "studeren", 
-        "coderen", "code bij elkaar googlen", "binnen blijven", "werken", "zwemmen", "reizen",
+        "coderen", "code bij elkaar googlen", "binnen blijven", "werken", "anderhalve meter afstand houden", "reizen",
         "winnen", "koken", "springen", "bugs oplossen", "spelen", "slapen",
         "praten", "broodjes smeren", "wc papier hamsteren", "readme's schrijven", "typen",
         "gamen",  "ademen", "hacken", "deployen", "boos worden op designers", "lachen",
