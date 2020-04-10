@@ -4,6 +4,13 @@ Met socket.io heb ik een chat app gemaakt.
 ## De unieke feature
 Mijn feature is dat als jij een bepaald werkwoord stuurt in de chat dat dit woord word vervangen voor een ander random werkwoord uit een array. Het leek mij vooral heel grappig omdat je dan ineens iets heel anders zegt dan dat je bedoeld. Als bijvoorbeeld typt ik "Ik ben zo van plan om even te gamen" dan kan je terug krijgen "Ik ben zo van plan om even te coderen". Ik heb hiervoor zelf een array gemaakt met werkwoorden waarna geluisterd kan worden.
 
+Zinnen die leuk werken met deze feature:
+- Ik ga straks met mijn vriend(in) lopen
+- Wij gaan vanavond samen koken toch?
+- Straks neem ik even pauze en ga ik lekker gamen
+- De laatste tijd heb ik moeite met studeren
+- Vanaf nu meten we thuis studeren van de HvA
+
 #### De feature werkt als volgt:
 1. De zin word van de client naar de server verzonden.
 2. In de server word de zin losgebroken in een array met losse worden.
