@@ -6,7 +6,7 @@
 ### Concept
 
 ### Data flow
-![Untitled Diagram](https://user-images.githubusercontent.com/45541885/79556918-ffec7d00-80a1-11ea-966e-c9e6a41aa30a.jpg)
+![data flow](https://user-images.githubusercontent.com/45541885/79570411-abed9280-80b9-11ea-92e7-fa24a0518c8d.jpg)
 
 ### Installatie
 
