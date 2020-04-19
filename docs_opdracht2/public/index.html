@@ -4,22 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font: 13px Helvetica, Arial; }
-        form { background: #000; padding: 3px; }
-        form#messageForm {position: fixed; bottom: 0; width: 100%; }
-        form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-        form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-        #messages { list-style-type: none; margin: 0; padding: 0; }
-        #messages li { padding: 5px 10px; margin-bottom: 0.5em;}
-        #messages li.chatMSG { background: lightblue;}
-        #messages li.serverMSG { background: lightcoral;}
-    </style>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
 </head>
 <body>
+    <!-- <div id="toolbar">
+        <div id="radius">
+            Radius <span id="radiusValue">10</span>
+            <div id="lowerRadius" class="radiusControl"></div>
+            <div id="higherRadius" class="radiusControl"></div>
+        </div>
+    </div> -->
+    <div id="canvasContainer">
+        <canvas id="canvas" height="400" width="400"></canvas>
+    </div>
+
     <form id="usernameForm" action="">
-        <input id="username" autocomplete="off" type="text" placeholder="What is your name?"/>
+        <input id="usernameInput" autocomplete="off" type="text" placeholder="What is your name?"/>
         <button type="submit">Send</button>
       </form>
   

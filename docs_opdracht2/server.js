@@ -28,16 +28,16 @@ io.on('connection', function(socket){
 
 })
 
-// app.get('/movies', (req, res) => {
-//     fetch(`https://api.themoviedb.org/3/movie/550?api_key=${key}`)
-//       .then(async response => {
-//         const movieData = await response.json()
-//         res.sendFile(__dirname + '/public/test.html', {
-//           title: 'Movies',
-//           movieData,
-//         });
-//       })
-//   })
+app.get('/movies', (req, res) => {
+    fetch(`https://api.themoviedb.org/3/movie/550?api_key=${key}`)
+      .then(async response => {
+        const movieData = await response.json()
+        res.sendFile(__dirname + '/public/test.html', {
+          title: 'Movies',
+          movieData,
+        });
+      })
+  })
 
 app.get('/movies', function(req, res){
     res.sendFile(__dirname + '/public/test.html');
