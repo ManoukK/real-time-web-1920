@@ -11,9 +11,8 @@ let dragging = false;
 
 context.lineWidth = radius*2;
 
-function putPoint(e){
+function putPoint(e, mouseValue = 'dragging'){
     if(dragging){
-        // console.log('sending: ', e.offsetX, ',', e.offsetY)
         context.lineTo(e.offsetX, e.offsetY);
         context.strokeStyle = "black";
         context.stroke();
@@ -25,46 +24,73 @@ function putPoint(e){
         context.moveTo(e.offsetX, e.offsetY);
 
         let data = {
+            mouseValue,
             x: e.offsetX,
             y: e.offsetY
         }
-
         //https://www.youtube.com/watch?v=i6eP1Lw4gZk
         //canvas real time
         socket.emit('mouse', data);
-        socket.on('mouse', newDrawing);
     }
 }
 
-function newDrawing(data) {
-        // console.log('sending: ', data.x, ',', data.y)
-        context.lineTo(data.x, data.y);
-        context.strokeStyle = "blue";
-        context.stroke();
-        context.beginPath();
-        context.arc(data.x, data.y, radius, 0, Math.PI*2);
-        context.fillStyle = "blue";
-        context.fill();
-        context.beginPath();
-        context.moveTo(data.x, data.y);
-        context.beginPath();
-        // context.stopInteract();
-}
-
 function interact(e){
+    // console.log(e);
     dragging = true;
-    putPoint(e);
+    let mouseValue = 'start';
+    putPoint(e, mouseValue);
 }
 
-function stopInteract(){
+function stopInteract(e){
     dragging = false;
-    // schoont het pad op zodat je niet het 1 streep effect krijgt.
-    context.beginPath();
+    let mouseValue = 'stop';
+    let data = {
+        mouseValue,
+        x: e.offsetX,
+        y: e.offsetY
+    }
+    // ook het eind punt mee sturen naar de server
+    socket.emit('mouse', data);
 }
 
 canvas.addEventListener('mousedown', interact);
 canvas.addEventListener('mousemove', putPoint);
 canvas.addEventListener('mouseup', stopInteract);
+
+socket.on('mouse', newDrawing);
+socket.on('mouseStop', stop);
+socket.on('mouseStart', start);
+
+function stop(stopPositionX, stopPositionY){
+    context.beginPath();
+    console.log("end point", stopPositionX, stopPositionY);
+    // let mouseValue = 'stop';
+    // let endpoint = {
+    //     mouseValue,
+    //     x: stopPositionX,
+    //     y: stopPositionY
+    // }
+    // socket.emit('mouse', endpoint);
+    // ook het eind punt mee sturen naar de server
+}
+
+//van de server gebroadcast naar andere users
+function start(startPositionX, startPositionY) {
+    console.log("start point", startPositionX, startPositionY);
+    context.beginPath();
+}
+
+function newDrawing(dragPositionX, dragPositionY) {
+    context.lineTo(dragPositionX, dragPositionY);
+    context.strokeStyle = "blue";
+    context.stroke();
+    context.beginPath();
+    context.arc(dragPositionX, dragPositionY, radius, 0, Math.PI*2);
+    context.fillStyle = "blue";
+    context.fill();
+    context.beginPath();
+    context.moveTo(dragPositionX, dragPositionY); 
+}
 
 const setUsername = document.getElementById("usernameForm");
 setUsername.addEventListener('submit', usernameInput);

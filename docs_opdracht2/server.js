@@ -27,8 +27,39 @@ io.on('connection', function(socket){
     });
 
     socket.on('mouse', function(data){
-        socket.broadcast.emit('mouse', data);
+        // socket.broadcast.emit('mouse', data);
         console.log(data);
+
+        switch(data.mouseValue){
+          case 'start': 
+            let startPositionX = data.x;
+            let startPositionY = data.y;
+
+            console.log(startPositionX, startPositionY);
+            socket.broadcast.emit('mouseStart', startPositionX, startPositionY);
+
+           break;
+          case 'dragging':
+            console.log("hallo");
+            let dragPositionX = data.x;
+            let dragPositionY = data.y;
+
+            socket.broadcast.emit('mouse', dragPositionX, dragPositionY);
+
+           break;
+          case 'stop':
+            let stopPositionX = data.x;
+            let stopPositionY = data.y;
+            
+            console.log(stopPositionX, stopPositionY);
+            socket.broadcast.emit('mouseStop', stopPositionX, stopPositionY);
+
+           break;
+           default:
+         return false
+         break;
+         
+         }
     })
 
 })
