@@ -28,6 +28,7 @@ io.on('connection', function(socket){
 
     socket.on('mouse', function(data){
         // socket.broadcast.emit('mouse', data);
+
         console.log(data);
 
         switch(data.mouseValue){
@@ -50,7 +51,7 @@ io.on('connection', function(socket){
           case 'stop':
             let stopPositionX = data.x;
             let stopPositionY = data.y;
-            
+
             console.log(stopPositionX, stopPositionY);
             socket.broadcast.emit('mouseStop', stopPositionX, stopPositionY);
 

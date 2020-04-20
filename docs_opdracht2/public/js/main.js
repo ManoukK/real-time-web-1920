@@ -43,6 +43,7 @@ function interact(e){
 
 function stopInteract(e){
     dragging = false;
+    context.beginPath();
     let mouseValue = 'stop';
     let data = {
         mouseValue,
@@ -56,6 +57,8 @@ function stopInteract(e){
 canvas.addEventListener('mousedown', interact);
 canvas.addEventListener('mousemove', putPoint);
 canvas.addEventListener('mouseup', stopInteract);
+
+// socket.on('mouse', newDrawing);
 
 socket.on('mouse', newDrawing);
 socket.on('mouseStop', stop);
@@ -91,6 +94,19 @@ function newDrawing(dragPositionX, dragPositionY) {
     context.beginPath();
     context.moveTo(dragPositionX, dragPositionY); 
 }
+
+// function newDrawing(data) {
+//     context.lineTo(data.x, data.y);
+//     context.strokeStyle = "blue";
+//     context.stroke();
+//     context.beginPath();
+//     context.arc(data.x, data.y, radius, 0, Math.PI*2);
+//     context.fillStyle = "blue";
+//     context.fill();
+//     context.beginPath();
+//     context.moveTo(data.x, data.y); 
+//     context.beginPath();
+// }
 
 const setUsername = document.getElementById("usernameForm");
 setUsername.addEventListener('submit', usernameInput);
