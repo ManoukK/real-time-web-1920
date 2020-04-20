@@ -26,6 +26,11 @@ io.on('connection', function(socket){
         console.log('message from user', `${newMessage}`);
     });
 
+    socket.on('mouse', function(data){
+        socket.broadcast.emit('mouse', data);
+        console.log(data);
+    })
+
 })
 
 app.get('/movies', (req, res) => {

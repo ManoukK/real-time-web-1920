@@ -13,14 +13,42 @@ context.lineWidth = radius*2;
 
 function putPoint(e){
     if(dragging){
+        // console.log('sending: ', e.offsetX, ',', e.offsetY)
         context.lineTo(e.offsetX, e.offsetY);
+        context.strokeStyle = "black";
         context.stroke();
         context.beginPath();
         context.arc(e.offsetX, e.offsetY, radius, 0, Math.PI*2);
+        context.fillStyle = "black";
         context.fill();
         context.beginPath();
         context.moveTo(e.offsetX, e.offsetY);
+
+        let data = {
+            x: e.offsetX,
+            y: e.offsetY
+        }
+
+        //https://www.youtube.com/watch?v=i6eP1Lw4gZk
+        //canvas real time
+        socket.emit('mouse', data);
+        socket.on('mouse', newDrawing);
     }
+}
+
+function newDrawing(data) {
+        // console.log('sending: ', data.x, ',', data.y)
+        context.lineTo(data.x, data.y);
+        context.strokeStyle = "blue";
+        context.stroke();
+        context.beginPath();
+        context.arc(data.x, data.y, radius, 0, Math.PI*2);
+        context.fillStyle = "blue";
+        context.fill();
+        context.beginPath();
+        context.moveTo(data.x, data.y);
+        context.beginPath();
+        // context.stopInteract();
 }
 
 function interact(e){
@@ -37,7 +65,6 @@ function stopInteract(){
 canvas.addEventListener('mousedown', interact);
 canvas.addEventListener('mousemove', putPoint);
 canvas.addEventListener('mouseup', stopInteract);
-
 
 const setUsername = document.getElementById("usernameForm");
 setUsername.addEventListener('submit', usernameInput);
