@@ -35,7 +35,7 @@ Uiteindelijk wil ik ook een feature toevoegen waarbij je kan kiezen of je een ga
 
 
 ### Data flow
-![data flow](https://user-images.githubusercontent.com/45541885/79570411-abed9280-80b9-11ea-92e7-fa24a0518c8d.jpg)
+![photo_2020-04-20_18-12-17](https://user-images.githubusercontent.com/45541885/79774105-a6e74800-8332-11ea-90ba-105bf1b8725d.jpg)
 
 ### Installatie
 
