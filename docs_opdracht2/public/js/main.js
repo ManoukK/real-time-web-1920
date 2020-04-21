@@ -80,7 +80,16 @@ function stop(stopPositionX, stopPositionY){
 //van de server gebroadcast naar andere users
 function start(startPositionX, startPositionY) {
     console.log("start point", startPositionX, startPositionY);
+    // context.beginPath();
+    context.lineTo(startPositionX, startPositionY);
+    context.strokeStyle = "blue";
+    context.stroke();
     context.beginPath();
+    context.arc(startPositionX, startPositionY, radius, 0, Math.PI*2);
+    context.fillStyle = "blue";
+    context.fill();
+    context.beginPath();
+    context.moveTo(startPositionX, startPositionY); 
 }
 
 function newDrawing(dragPositionX, dragPositionY) {
