@@ -34,11 +34,11 @@ Uiteindelijk wil ik ook een feature toevoegen waarbij je kan kiezen of je een ga
 ### Data/API
 
 ### Features
-[ ] Voordat de game start spelers laten kiezen tussen films of series.
-[ ] Voordat de game start spelers laten kiezen tussen genres.
-[ ] Puntentelling wie het snelst raad krijgt meer punten en wie als laatste raad het minst.
-[ ] Timer toevoegen van hoelang elke ronde duurt en zodra de timer af gaat begint automatisch de volgende ronde. 
-[ ]
+- [ ] Voordat de game start spelers laten kiezen tussen films of series.
+- [ ] Voordat de game start spelers laten kiezen tussen genres.
+- [ ] Puntentelling wie het snelst raad krijgt meer punten en wie als laatste raad het minst.
+- [ ] Timer toevoegen van hoelang elke ronde duurt en zodra de timer af gaat begint automatisch de volgende ronde. 
+- [ ]
 
 ### Bronnen
 
