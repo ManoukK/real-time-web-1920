@@ -2,6 +2,9 @@
 ### Inhoudsopgave
 
 ### Opdracht
+Het is de bedoeling dat we een applicatie maken met real time features. Dit kan je doen via socket.io. Je maakt gebruik van een externe dataset van een api en je kan ook de gebruikers de database laten vullen met data. De api hoeft zelf niet per se real time te zijn, als dit niet het geval is moet je ervoor zorgen dat je op een andere manier real time features laat zien. 
+
+Het is ook de bedoeling dat je ervoor zorgt dat elke bezoeker/gebruiker content krijgt die hij/zij nodig heeft. Dit is voor elke gebruiker weer anders.
 
 ### Concept
 Mijn concept is een game waarbij de ene speler een film krijgt die hij moet tekenen waarna speler 2 moet raden welke film speler 1 heeft getekend. Op deze manier kunnen spelers punten verdienen. Komen er meer spelers bij dan kunnen zij ook de film raden. 
@@ -30,6 +33,31 @@ Uiteindelijk wil ik ook een feature toevoegen waarbij je kan kiezen of je een ga
 ![photo_2020-04-20_18-12-17](https://user-images.githubusercontent.com/45541885/79774105-a6e74800-8332-11ea-90ba-105bf1b8725d.jpg)
 
 ### Installatie
+Mijn project kan je clonen en downloaden via de groene knop die rechts bovenin staat van github. Je hebt alleen opdracht 2 nodig. Als je dat hebt gedaan moet je nog de dependencies installeren die ik heb gebruikt voor dit project. Dat kan je doen door het volgende in de terminal te typen: 
+
+Zorg er wel voor dat je in het juiste project zit in de terminal. 
+
+```
+npm init
+```
+En daarna typt je dit stukje in de terminal:
+```
+npm install
+```
+
+Dit zijn de depencendies die worden geïnstalleerd zodra je dit hebt gedaan:
+- nodejs
+- nodemon
+- socket.io
+- node-fetch
+- express
+
+De localhost die ik heb gebruikt heeft nummer 2000. Nu kan je de applicatie opstarten met:
+```
+npm start
+```
+
+en kan je naar localhost:2000 om het “live” te zien. Als je zelf iets aanpast in de code start de server automatisch opnieuw op dankzij nodemon. Dan moet je alleen nog even de browser refreshen waar de applicatie in staat en dan zie je de aanpassingen die je hebt gemaakt. 
 
 ### Data/API
 
@@ -38,7 +66,6 @@ Uiteindelijk wil ik ook een feature toevoegen waarbij je kan kiezen of je een ga
 - [ ] Voordat de game start spelers laten kiezen tussen genres.
 - [ ] Puntentelling wie het snelst raad krijgt meer punten en wie als laatste raad het minst.
 - [ ] Timer toevoegen van hoelang elke ronde duurt en zodra de timer af gaat begint automatisch de volgende ronde. 
-- [ ]
 
 ### Bronnen
 
