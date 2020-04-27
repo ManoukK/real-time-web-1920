@@ -69,11 +69,17 @@ Niet alle data heb ik nodig uit die api dus in de fetch heb ik het al opgeschoon
 > Opgeschoonde api data screenshot
 
 De link naar de coverfoto van de films werken net even wat anders. In de api staat wel een link naar de cover toe alleen daar moet je nog iets voorzetten zodat het goed linkt. Je moet namelijk dit stukje ervoor zetten:
-> https://image.tmdb.org/t/p/w500/
+```
+https://image.tmdb.org/t/p/w500/
+```
  Dus wat je nu zal krijgen is dat je in de api de cover opvraagt en als je het als afbeelding in je website wilt zetten komt het er zo uit te zien:
-> https://image.tmdb.org/t/p/w500/${randomMovie.poster_path}
+ ```
+https://image.tmdb.org/t/p/w500/${randomMovie.poster_path}
+```
 Of op deze manier:
-> https://image.tmdb.org/t/p/w500/aOIuZAjPaRIE6CMzbazvcHuHXDc.jpg
+```
+https://image.tmdb.org/t/p/w500/aOIuZAjPaRIE6CMzbazvcHuHXDc.jpg
+```
 Als je nu de laatste link kopieert in een nieuw tabblad krijg je de cover te zien van de matrix en dit wil je ook zo hebben op je website. 
 
 ### Features
