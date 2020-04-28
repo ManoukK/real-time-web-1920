@@ -89,5 +89,12 @@ Als je nu de laatste link kopieert in een nieuw tabblad krijg je de cover te zie
 - [ ] Timer toevoegen van hoelang elke ronde duurt en zodra de timer af gaat begint automatisch de volgende ronde. 
 
 ### Bronnen
+- Cheat sheet van socket.io: https://socket.io/docs/emit-cheatsheet/
+- Hoe je de user id krijgt van socket: https://stackoverflow.com/questions/43464617/how-to-get-user-id-using-username-in-socket-io
+- 
 
 ### Credits
+- Tekenen in een canvas: 
+- Robin had me geholpen met het opslaan van user data op de server. 
+- Coen had feedback gegeven op mijn data life chart
+- 
