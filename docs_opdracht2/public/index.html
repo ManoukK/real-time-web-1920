@@ -3,32 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Guess the movie</title>
     <link rel="stylesheet" type="text/css" href="/css/styles.css">
 </head>
 <body>
-    <!-- <div id="toolbar">
-        <div id="radius">
-            Radius <span id="radiusValue">10</span>
-            <div id="lowerRadius" class="radiusControl"></div>
-            <div id="higherRadius" class="radiusControl"></div>
+
+    <form id="usernameForm" action="" >
+        <h2>Enter your name to play the game</h2>
+        <div>
+            <input id="usernameInput" autocomplete="off" type="text" placeholder="What is your name?"/>
+            <button id="usernameButton" type="submit">Send</button>
         </div>
-    </div> -->
-    <div id="canvasContainer">
-        <canvas id="canvas" height="400" width="400"></canvas>
-    </div>
+    </form>
+    <section id="roundEnd">
+        <article id="informationTextAboutRound">
+        </article>
+    </section>
 
-    <form id="usernameForm" action="">
-        <input id="usernameInput" autocomplete="off" type="text" placeholder="What is your name?"/>
-        <button type="submit">Send</button>
-      </form>
-  
-      <ul id="messages"></ul>
-      <form action="" id="messageForm">
-        <input id="m" autocomplete="off" type="text" placeholder="What is on your mind?"/> 
-        <button type="submit">Send</button>
-      </form>
+    <main id="game" class="locked">
+        <section id="movielist">
 
+        </section>
+
+        <section id="canvasSection">
+            <div id="canvasContainer">
+                <canvas id="canvas" height="400" width="400"></canvas>
+            </div>
+        </section>
+
+        <section id="chatSection">
+            <ul id="messages"></ul>
+
+            <form action="" id="messageForm">
+                <input id="m" autocomplete="off" type="text" placeholder="What is on your mind?"/> 
+                <button type="submit">Send</button>
+            </form>
+        </section>
+
+    </main>
     <script src="/js/socket.js"></script>
     <script src="/js/main.js"></script>
 </body>

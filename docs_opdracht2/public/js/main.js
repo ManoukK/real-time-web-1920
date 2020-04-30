@@ -30,16 +30,16 @@ function putPoint(e, mouseValue = 'dragging'){
         }
         //https://www.youtube.com/watch?v=i6eP1Lw4gZk
         //canvas real time
-        socket.emit('mouse', data);
+        socket.emit('mouseMoving', data);
     }
-}
+};
 
 function interact(e){
     // console.log(e);
     dragging = true;
     let mouseValue = 'start';
     putPoint(e, mouseValue);
-}
+};
 
 function stopInteract(e){
     dragging = false;
@@ -51,74 +51,61 @@ function stopInteract(e){
         y: e.offsetY
     }
     // ook het eind punt mee sturen naar de server
-    socket.emit('mouse', data);
-}
+    socket.emit('mouseMoving', data);
+};
 
 canvas.addEventListener('mousedown', interact);
 canvas.addEventListener('mousemove', putPoint);
 canvas.addEventListener('mouseup', stopInteract);
 
-// socket.on('mouse', newDrawing);
-
-socket.on('mouse', newDrawing);
+socket.on('mouseMoving', whileDragging);
 socket.on('mouseStop', stop);
 socket.on('mouseStart', start);
 
 function stop(stopPositionX, stopPositionY){
     context.beginPath();
     console.log("end point", stopPositionX, stopPositionY);
-    // let mouseValue = 'stop';
-    // let endpoint = {
-    //     mouseValue,
-    //     x: stopPositionX,
-    //     y: stopPositionY
-    // }
-    // socket.emit('mouse', endpoint);
-    // ook het eind punt mee sturen naar de server
-}
+};
 
 //van de server gebroadcast naar andere users
-function start(startPositionX, startPositionY) {
+function start(startPositionX, startPositionY, randomColor) {
     console.log("start point", startPositionX, startPositionY);
-    // context.beginPath();
     context.lineTo(startPositionX, startPositionY);
-    context.strokeStyle = "blue";
+    context.strokeStyle = randomColor;
     context.stroke();
     context.beginPath();
     context.arc(startPositionX, startPositionY, radius, 0, Math.PI*2);
-    context.fillStyle = "blue";
+    context.fillStyle = randomColor;
     context.fill();
     context.beginPath();
-    context.moveTo(startPositionX, startPositionY); 
+    context.moveTo(startPositionX, ); 
 }
 
-function newDrawing(dragPositionX, dragPositionY) {
+function whileDragging(dragPositionX, dragPositionY, randomColor) {
     context.lineTo(dragPositionX, dragPositionY);
-    context.strokeStyle = "blue";
+    context.strokeStyle = randomColor;
     context.stroke();
     context.beginPath();
     context.arc(dragPositionX, dragPositionY, radius, 0, Math.PI*2);
-    context.fillStyle = "blue";
+    context.fillStyle = randomColor;
     context.fill();
     context.beginPath();
     context.moveTo(dragPositionX, dragPositionY); 
-}
+};
 
-// function newDrawing(data) {
-//     context.lineTo(data.x, data.y);
-//     context.strokeStyle = "blue";
-//     context.stroke();
-//     context.beginPath();
-//     context.arc(data.x, data.y, radius, 0, Math.PI*2);
-//     context.fillStyle = "blue";
-//     context.fill();
-//     context.beginPath();
-//     context.moveTo(data.x, data.y); 
-//     context.beginPath();
-// }
+// const usernameSend = document.getElementById("usernameForm");
+// usernameSend.addEventListener('submit', usernameInput);
 
-const setUsername = document.getElementById("usernameForm");
-setUsername.addEventListener('submit', usernameInput);
+
+const usernameSend = document.getElementById('usernameButton')
+
+usernameSend.addEventListener('click', function() {
+    event.preventDefault();
+    const username = document.getElementById('usernameInput')
+    socket.emit('start game', username.value);
+    document.getElementById('game').classList.remove('locked')
+    document.getElementById('usernameForm').classList.add('locked')
+  })
 
 const msgForm = document.getElementById("messageForm");
 msgForm.addEventListener('submit', inputText);
@@ -127,20 +114,49 @@ function inputText(event){
     event.preventDefault();
     const inputField = document.getElementById("m");
     console.log(inputField.value);
-
-    //emit stuurt naar de server
     socket.emit("chat message", inputField.value);
+};
 
-    //luistert naar de server (berichten)
-    socket.on('chat message', function(msg){
-        const messages = document.getElementById("messages");
-        messages.insertAdjacentHTML("beforeend", `<li class="chatMSG">${msg}</li>`);
-    });
-}
+socket.on('server message', function(msg){
+    const messages = document.getElementById("messages");
+    messages.insertAdjacentHTML("beforeend", `<li class="serverMSG">${msg}</li>`);
+});
+
+socket.on('chat message', function(msg, randomColor){
+    const messages = document.getElementById("messages");
+    messages.insertAdjacentHTML("beforeend", `<li class="chatMSG" style="border: 5px solid ${randomColor};" >${msg}</li>`)
+});
+
+socket.on('player role', function(currantMovieTitle, currantMovieCover){
+    if(currantMovieTitle === 'player role guesser'){
+        const movieImages = document.getElementById('movielist');
+        movieImages.insertAdjacentHTML("beforeend", `<h2>Guess the movie in the chat</h2>`)
+        movieImages.insertAdjacentHTML("beforeend", `<p>The first one who guess the movie right wins this round! So be quick</p>`)
+        movieImages.insertAdjacentHTML("beforeend", `<img src="https://lh3.googleusercontent.com/proxy/2holoyWbQotj033yGIjGiTE_uiEJ9w6geWd8Ksosm_lMtP3alNLxCidD3CAofyQucLAyQCyw89Dd91nuOgnYWEstnGB7aC_pVHoGBROdlA4d6Ljv58qVmX19v-ecp5Se" alt="Cover image of a questionmark" >`)
+    } else {
+        const movieImages = document.getElementById('movielist');
+        movieImages.insertAdjacentHTML("beforeend", `<h1>Draw this movie:</h1>`)
+        movieImages.insertAdjacentHTML("beforeend", `<h2>${currantMovieTitle}</h2>`)
+        movieImages.insertAdjacentHTML("beforeend", `<p>Tip: if you don't know the movie, draw the poster</p>`)
+        movieImages.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`)
+    }
+})
+
+// saveDrawing();
+
+socket.on('player guessed movie', function(currantMovieTitle, currantMovieCover, userName){
+    const showMovie = document.getElementById('roundEnd');
+    const showWinner = document.getElementById('informationTextAboutRound');
+    showWinner.insertAdjacentHTML("beforeend", `<h1>The movie was: ${currantMovieTitle}</h1>`)
+    showWinner.insertAdjacentHTML("beforeend", `<h2>${userName} is the winner of this round!</h2>`)
+    showWinner.insertAdjacentHTML("beforeend", `<p>${userName} gets 1 point</p>`)
+    showMovie.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`)
+    // window.location = document.getElementById("canvas").toDataURL('image/png');
+    // socket.emit("save game data of round", window.location);
+    // alert("Hello! I am an alert box!!");
+});
 
 
-//https://www.youtube.com/watch?v=m4sioSqlXhQ
-// deze tutorial volgen
 
 
 
@@ -149,67 +165,3 @@ function inputText(event){
 
 
 
-
-
-
-
-
-// var canvas = document.getElementById('canvas');
-// var canvasContext = canvas.getContext('2d');
-// var mouseClicked = false;
-// var mouseResleased = true;
-
-// var height = canvas.height = window.innerHeight;
-// var width = canvas.width = window.innerWidth;
-
-// canvas.addEventListener("click", onMouseClick, false);
-// canvas.addEventListener("mousemove", onMouseMove, false);
-
-// function onMouseClick(e) {
-//     mouseClicked = !mouseClicked;
-// }
-
-// function onMouseMove(e) {
-//     if (mouseClicked) {
-//         context.beginPath();
-//         context.arc(e.clientX, e.clientY, 7.5, 0, Math.PI * 2, false);
-//         context.lineWidth = 5;
-//         context.strokeStyle = "#fff";
-//         context.stroke();
-//     }
-// }
-
-// draw();
-// function draw() {
-//     const canvas = document.getElementById('canvas');
-
-//     const canvasContext = canvas.getContext('2d');
-
-//     const mouseClicked = false;
-//     const mouseResleased = true;
-
-//     document.addEventListener("click", onMouseClick, false);
-
-//     document.addEventListener("mousemove", onMouseMove, false);
-
-//     // canvasContext.fillRect(x, y, width, height)
-
-//     // if (canvas.getContext){
-//     //     let ctx = canvas.getContext('2d');
-
-//         // ctx.fillStyle = 'orange';
-//         // ctx.fillStyle = '#FFA500';
-//         // ctx.fillStyle = 'rgb(255, 165, 0)';
-//         // ctx.fillStyle = 'rgba(255, 165, 0, 1)';
-
-//         // ctx.beginPath();
-//         // ctx.arc(75, 75, 50, 0, Math.PI * 2, true); // Outer circle
-//         // ctx.moveTo(110, 75);
-//         // ctx.arc(75, 75, 35, 0, Math.PI, false);  // Mouth (clockwise)
-//         // ctx.moveTo(65, 65);
-//         // ctx.arc(60, 65, 5, 0, Math.PI * 2, true);  // Left eye
-//         // ctx.moveTo(95, 65);
-//         // ctx.arc(90, 65, 5, 0, Math.PI * 2, true);  // Right eye
-//         // ctx.stroke();
-//     // }
-// };

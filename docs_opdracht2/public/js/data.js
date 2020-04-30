@@ -6,7 +6,6 @@ async function getData(){
     // const endpoint = 'https://api.themoviedb.org/3/';
     // const key = 'd279459f07cba4cb7988fbc31b7aa0bd';
     // const movieID = '2121'
-
     // const url = `${cors}${endpoint}movie/${movieID}?api_key=${key}`;
 
     const randomPage = Math.floor((Math.random() * 10) +1);
@@ -27,7 +26,18 @@ async function getData(){
             console.log(results);
             return results.results;
         })
+        .then(results => {
+            // console.log("dataset test", results)
+            return results.map(results => {
+                return {
+                    movieTitle: results.title,
+                    movieImage: results.poster_path,
+                    movieID: results.id,
+                }
+            })
+        })
         .then(function(results) {
+            console.log(results)
             tester(results);
         })
         .catch(function(err) {
@@ -37,7 +47,6 @@ async function getData(){
         return data;
 }
 
-// tester();
 function tester(results) {
 
     const randomMovieIndex = Math.floor(Math.random() * 20);
@@ -51,32 +60,4 @@ function tester(results) {
         `;
     const sectionField = document.getElementById('movielist');
     sectionField.insertAdjacentHTML('beforeend', htmlMainPage);
-
-    // randomMovie.map(function(result, index) {
-    //     //https://javascript.info/ifelse uitleg over "result = condition ? value1 : value2;"
-    //     // dit is een verkorte versie van de if else statement. 
-    //     // als de result.summaries een waarde heeft moet het deze waarde laten zien: result.summaries[0]
-    //     // als het geen waarde bevat moet het de melding hebben 'Geen samenvatting'
-
-    //     const htmlMainPage = `
-    //         <p>${result.title}</p>
-    //         <img src="https://image.tmdb.org/t/p/w500/${result.poster_path}" alt="Movie poster of ${result.title}." class="moviePoster">
-    //         `;
-    //     const sectionField = document.getElementById('movielist');
-    //     sectionField.insertAdjacentHTML('beforeend', htmlMainPage);
-    // });
-
-    // results.map(function(result, index) {
-    //     //https://javascript.info/ifelse uitleg over "result = condition ? value1 : value2;"
-    //     // dit is een verkorte versie van de if else statement. 
-    //     // als de result.summaries een waarde heeft moet het deze waarde laten zien: result.summaries[0]
-    //     // als het geen waarde bevat moet het de melding hebben 'Geen samenvatting'
-
-    //     const htmlMainPage = `
-    //         <p>${result.title}</p>
-    //         <img src="https://image.tmdb.org/t/p/w500/${result.poster_path}" alt="Movie poster of ${result.title}." class="moviePoster">
-    //         `;
-    //     const sectionField = document.getElementById('movielist');
-    //     sectionField.insertAdjacentHTML('beforeend', htmlMainPage);
-    // });
 };
