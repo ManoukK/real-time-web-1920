@@ -51,6 +51,7 @@ Dit zijn de depencendies die worden geïnstalleerd zodra je dit hebt gedaan:
 - socket.io
 - node-fetch
 - express
+- dotenv
 
 De localhost die ik heb gebruikt heeft nummer 2000. Nu kan je de applicatie opstarten met:
 ```
@@ -64,9 +65,21 @@ De api die ik gebruik is movieDB: https://developers.themoviedb.org/3/getting-st
 
 ![Schermafbeelding 2020-04-26 om 18 37 55](https://user-images.githubusercontent.com/45541885/80314046-22dc0700-87ef-11ea-91b0-c813b1956f9a.png)
 
-Niet alle data heb ik nodig uit die api dus in de fetch heb ik het al opgeschoont. Hierdoor wordt de api wat fijner te gebruiken tijdens het coderen. Uiteindelijk wil ik alleen gebruik maken van de coverfoto van de film en de titel. 
+Niet alle data heb ik nodig uit die api dus in de fetch heb ik het al opgeschoont. Hierdoor wordt de api wat fijner te gebruiken tijdens het coderen. Uiteindelijk wil ik alleen gebruik maken van de coverfoto van de film en de titel. De id van de films vond ik ook handig om te hebben want zo kan ik ze altijd van elkaar onderscheiden als dat nodig is. 
 
-> Opgeschoonde api data screenshot
+```js
+.then(results => {
+          return results.map(results => {
+              return {
+                  movieTitle: results.title,
+                  movieImage: results.poster_path,
+                  movieID: results.id,
+              }
+            })
+          })
+```
+
+![Schermafbeelding 2020-05-03 om 11 56 47](https://user-images.githubusercontent.com/45541885/80913803-beb5c780-8d47-11ea-974f-fa37027263d0.png)
 
 De link naar de coverfoto van de films werken net even wat anders. In de api staat wel een link naar de cover toe alleen daar moet je nog iets voorzetten zodat het goed linkt. Je moet namelijk dit stukje ervoor zetten:
 ```
