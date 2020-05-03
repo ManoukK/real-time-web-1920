@@ -3,7 +3,8 @@
 * [Opdracht](#Opdracht)
 * [Concept](#Concept)
 * [Data flow](#Data-flow)
-* [Data/API](#Data/API)
+* [Installatie](#Installatie)
+* [API en de data](#API-en-de-data)
 * [Socket events](#Socket-events)
 * [Features](#Features)
 * [Bronnen](#Bronnen)
@@ -68,7 +69,7 @@ npm start
 
 en kan je naar localhost:2000 om het “live” te zien. Als je zelf iets aanpast in de code start de server automatisch opnieuw op dankzij nodemon. Dan moet je alleen nog even de browser refreshen waar de applicatie in staat en dan zie je de aanpassingen die je hebt gemaakt. 
 
-### Data/API
+### API en de data
 De api die ik gebruik is movieDB: https://developers.themoviedb.org/3/getting-started/introduction Dit is een database met alle films en tv series die er zijn en die nog moeten komen. Voor dit project gebruik ik tot nu toe alleen nog de films. Als feature wil ik nog toevoegen dat de gebruiker zelf kan kiezen of hij een game wilt starten over films of series. De films uit de api bevatten ontzettend veel data. 
 
 ![Schermafbeelding 2020-04-26 om 18 37 55](https://user-images.githubusercontent.com/45541885/80314046-22dc0700-87ef-11ea-91b0-c813b1956f9a.png)
