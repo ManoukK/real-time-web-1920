@@ -100,7 +100,7 @@ Als je nu de laatste link kopieert in een nieuw tabblad krijg je de cover te zie
 <details>
 <summary>Users vult zijn username in</summary>
           
-> socket.on('start game', async function(id)
+#### socket.on('start game', async function(id)
           
 Zodra een gebruiker op de website komt en zijn username heeft ingevuld wordt deze functie uitgevoerd. Er wordt gekeken of de value van de username niet leeg is, als dat wel zo is wordt de username gezet naar ANONYMOUS. Er wordt ook gekeken of de username niet al bestaat. Stel er is al een username genaamt Piet dan wordt de tweede username die Piet heeft Piet + het nummer van de lengte van de array met gebruikersnamen die meedoen aan de game. Ik wilde er eerst een random getal achter zetten maar ook hier kan het gebeuren dat 2 mensen met dezelfde naam dezelfde nummer krijgen. 
 
@@ -157,7 +157,7 @@ socket.on('player role', function(currantMovieTitle, currantMovieCover){
 <details>
 <summary>User tekent een film na</summary>
          
-> socket.on('mouseMoving', function(data)
+#### socket.on('mouseMoving', function(data)
       
 Om ervoor te zorgen dat het tekenen live te zien is moest ik de data die wordt gemaakt tijdens het tekenen doorsturen naar de server en die data weer doorsturen naar andere spelers. 
 
@@ -223,7 +223,7 @@ Op deze manier worden de tekeningen doorgestuurd naar de andere users. Het is ei
 <details>
 <summary>Spelers proberen de film te raden</summary>
           
-> socket.on('chat message', function)
+#### socket.on('chat message', function)
           
 In de chat functie wordt bij elk bericht die wordt verstuurd gekeken of daar het antwoord tussen zit van de film titel. Eerst wordt het bericht en de titel van de film omgezet naar hoofdletters zodat daar geen problemen in kunnen zitten. Vervolgens word er met deze if statement gekeken of de username van degene die raad niet overeenkomt met degene die aan het tekenen is. Dan moet ook het bericht overeenkomen met de titel.
 ```js
