@@ -94,14 +94,15 @@ Als je nu de laatste link kopieert in een nieuw tabblad krijg je de cover te zie
 - Cheat sheet van socket.io: https://socket.io/docs/emit-cheatsheet/
 - Hoe je de user id krijgt van socket: https://stackoverflow.com/questions/43464617/how-to-get-user-id-using-username-in-socket-io
 - .env met behulp van dit filmpje: https://www.youtube.com/watch?v=zDup0I2VGmk
-- Hoe je een randomr kleur genereerd: https://dev.to/akhil_001/generating-random-color-with-single-line-of-js-code-fhj
+- Hoe je een random kleur genereerd: https://dev.to/akhil_001/generating-random-color-with-single-line-of-js-code-fhj
 - Hoe je usernames kan bijhouden in een array: https://stackoverflow.com/questions/18335028/socket-io-how-to-prompt-for-username-and-save-the-username-in-an-array
 - Hoe je een if statement schrijft waarbij 2 waardes true moeten zijn: https://stackoverflow.com/questions/8710442/how-to-specify-multiple-conditions-in-an-if-statement-in-javascript
 - Hoe je met de muis kan tekenen in canvas: https://www.youtube.com/watch?v=m4sioSqlXhQ en https://www.youtube.com/watch?v=XbS2bLMzcrk
 - Het tekenen real time maken: https://www.youtube.com/watch?v=i6eP1Lw4gZk
 
 ### Credits
-- Tekenen in een canvas: 
+- Tekenen in een canvas: https://www.youtube.com/watch?v=m4sioSqlXhQ en https://www.youtube.com/watch?v=XbS2bLMzcrk
 - Robin had me geholpen met het opslaan van user data op de server. 
 - Coen had feedback gegeven op mijn data life chart
-- 
+- et tekenen real time maken: https://www.youtube.com/watch?v=i6eP1Lw4gZk
+- .env met behulp van dit filmpje: https://www.youtube.com/watch?v=zDup0I2VGmk
