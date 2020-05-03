@@ -249,8 +249,8 @@ Ik wil ook nog een statement maken dat als de users die moest tekenen de titel i
 
 <details>
 <summary>Chat messages</summary>
-
-> io.emit('chat message', `${userName}: ${msg}`, randomColor);
+          
+#### io.emit('chat message', `${userName}: ${msg}`, randomColor);
 
 Chatberichten worden van de client naar de server gestuurd. Daar word gecheckt of het antwoord (de titel van de film) er in zit en zo niet dan wordt het bericht gewoon verstuurd naar iedereen. 
 
@@ -273,7 +273,7 @@ socket.on('chat message', function(msg, randomColor, gameResults){
 <details>
 <summary>Server mesages</summary>
 
-> socket.emit('server message', `Welcome ${userName}!`);
+#### socket.emit('server message', `Welcome ${userName}!`);
 
 Hier zijn alle server messages op een rij die ik gebruik. Deze zitten op verschillende plekken in mijn code maar om het overzichtelijk te houden heb ik ze even onder elkaar gezet. 
 
