@@ -91,7 +91,7 @@ Als je nu de laatste link kopieert in een nieuw tabblad krijg je de cover te zie
 ### Bronnen
 - Cheat sheet van socket.io: https://socket.io/docs/emit-cheatsheet/
 - Hoe je de user id krijgt van socket: https://stackoverflow.com/questions/43464617/how-to-get-user-id-using-username-in-socket-io
-- 
+- .env met behulp van dit filmpje: https://www.youtube.com/watch?v=zDup0I2VGmk
 
 ### Credits
 - Tekenen in een canvas: 
