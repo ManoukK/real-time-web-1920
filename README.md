@@ -30,7 +30,7 @@ Als de game is beëindigd krijgen de spelers een overzicht te zien van alle film
 Uiteindelijk wil ik ook een feature toevoegen waarbij je kan kiezen of je een game wilt starten over films of over series want de moviedb api bevat ook series. Zo krijgen mensen meer keuze en vrijheid in de game die ze willen spelen. Ook wil ik later als feature toevoegen dat mensen een game kunnen starten met films of series uit een bepaalde genre. 
 
 ### Data flow
-![photo_2020-04-20_18-12-17](https://user-images.githubusercontent.com/45541885/79774105-a6e74800-8332-11ea-90ba-105bf1b8725d.jpg)
+![defDLC](https://user-images.githubusercontent.com/45541885/80913494-48b06100-8d45-11ea-9a03-3efc258a113f.png)
 
 ### Installatie
 Mijn project kan je clonen en downloaden via de groene knop die rechts bovenin staat van github. Je hebt alleen opdracht 2 nodig. Als je dat hebt gedaan moet je nog de dependencies installeren die ik heb gebruikt voor dit project. Dat kan je doen door het volgende in de terminal te typen: 
