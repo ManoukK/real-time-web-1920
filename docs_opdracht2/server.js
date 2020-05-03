@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const host = '0.0.0.0';
@@ -23,6 +24,7 @@ let gameResults = {};
 let apiResults = [];
 let movieLeftovers = [];
 let randomMovie = [];
+let drawingRole = 0;
 
 // let drawPlayer = Object.keys(gameResults)[0];
 
@@ -61,20 +63,21 @@ io.on('connection', function(socket){
       if(connectedUsers.length === 1){
         apiResults = await getData();
         movieLeftovers = apiResults;
-        console.log(movieLeftovers.length);
-        console.log(apiResults.length);
-        showMovie();
+        // console.log(movieLeftovers.length);
+        // console.log(apiResults.length);
+        console.log(drawingRole);
+        // let setDrawingRole = 0;
+        // drawPlayer = Object.keys(gameResults)[setDrawingRole];
+
+        // let setPoint = gameResults[userName].wins++;
+
+        showMovie(drawingRole);
       } else {
         socket.emit('player role', `player role guesser`)
       }
 
       socket.emit('server message', `Welcome ${userName}!`);
       socket.broadcast.emit('server message', `${userName} joined the game!`);
-
-      //later verplaatsen
-      const currantMovieTitle = Object.values(randomMovie)[0].movieTitle;
-      const currantMovieCover = Object.values(randomMovie)[0].movieImage;
-      io.emit('player guessed movie', currantMovieTitle, currantMovieCover, userName);
   });
 
   socket.on('chat message', function(msg){   
@@ -140,7 +143,7 @@ io.on('connection', function(socket){
   });
 
   async function getData(){
-    const key = 'd279459f07cba4cb7988fbc31b7aa0bd';
+    const key = process.env.API_KEY;
     const randomPage = Math.floor((Math.random() * 10) +1);
     const listSortingSetting = 'popularity.desc'  
     const url = `https://api.themoviedb.org/3/discover/movie?api_key=${key}&language=en-US&sort_by=${listSortingSetting}&include_adult=false&include_video=false&page=${randomPage}`
@@ -168,13 +171,17 @@ io.on('connection', function(socket){
         return data;
     }
 
-  function showMovie(){
-    const playerDraw = Object.values(gameResults)[0].userId;
+  function showMovie(drawingRole){
+    console.log("in showmovie function", drawingRole)
+    const playerDrawId = Object.values(gameResults)[drawingRole].userId;
+    console.log(playerDrawId);
     randomMovieGenerator(gameResults);
-    const currantMovieTitle = Object.values(randomMovie)[0].movieTitle;
-    const currantMovieCover = Object.values(randomMovie)[0].movieImage;
+    const currantMovieTitle = Object.values(randomMovie)[drawingRole].movieTitle;
+    console.log(currantMovieTitle);
+    const currantMovieCover = Object.values(randomMovie)[drawingRole].movieImage;
+    console.log(currantMovieCover);
     io.emit;
-    io.to(playerDraw).emit('player role', currantMovieTitle, currantMovieCover);
+    io.to(playerDrawId).emit('player role', currantMovieTitle, currantMovieCover);
   }
 
   function randomMovieGenerator(gameResults){
@@ -203,15 +210,26 @@ io.on('connection', function(socket){
       if(drawPlayer !== userName && msgUpper === movieTitleUpper){
         io.emit('chat message', `${userName}: ${msg}`, randomColor);
         io.emit('server message', `${userName} guessed the movie! It was: ${movieTitleUpper}`);
-        io.emit('player guessed movie', `a player guessed it!`);
+
+        const currantMovieTitle = Object.values(randomMovie)[0].movieTitle;
+        const currantMovieCover = Object.values(randomMovie)[0].movieImage;
+        io.emit('player guessed movie', currantMovieTitle, currantMovieCover, userName);
+
         console.log(gameResults);
         let setPoint = gameResults[userName].wins++;
-        let setDrawingRole = 0;
-        setDrawingRole++;
+        drawingRole++;
+        console.log("in chat", drawingRole)
+        // let setDrawingRole = drawPlayer;
+        // setDrawingRole++;
+        // console.log(drawPlayer);
+        // console.log(setDrawingRole);
 
-        drawPlayer = Object.keys(gameResults)[setDrawingRole];
-        console.log(gameResults);
+        // drawPlayer = Object.keys(gameResults)[setDrawingRole];
+        // console.log(gameResults);
+        // console.log(drawPlayer);
         randomMovieGenerator(gameResults);
+        //nog de juiste user aan meegegeven :PPPP
+        showMovie(drawingRole);
         // searchNewDrawPlayer = gameResults.indexOf(drawPlayer);
         // console.log(searchNewDrawPlayer);
 

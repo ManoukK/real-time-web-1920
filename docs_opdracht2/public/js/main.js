@@ -147,15 +147,25 @@ socket.on('player role', function(currantMovieTitle, currantMovieCover){
 socket.on('player guessed movie', function(currantMovieTitle, currantMovieCover, userName){
     const showMovie = document.getElementById('roundEnd');
     const showWinner = document.getElementById('informationTextAboutRound');
-    showWinner.insertAdjacentHTML("beforeend", `<h1>The movie was: ${currantMovieTitle}</h1>`)
+    showWinner.insertAdjacentHTML("beforeend", `<h1>The movie was: <br> ${currantMovieTitle}</h1>`)
     showWinner.insertAdjacentHTML("beforeend", `<h2>${userName} is the winner of this round!</h2>`)
     showWinner.insertAdjacentHTML("beforeend", `<p>${userName} gets 1 point</p>`)
     showMovie.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`)
+    document.getElementById('roundEnd').classList.remove('locked')
+    document.getElementById('game').classList.add('locked')
+    click();
     // window.location = document.getElementById("canvas").toDataURL('image/png');
     // socket.emit("save game data of round", window.location);
     // alert("Hello! I am an alert box!!");
 });
 
+function click(){
+    const buttonNextRound = document.getElementById('goToNextRound');
+    buttonNextRound.addEventListener("click", function(){
+        document.getElementById('game').classList.remove('locked')
+        document.getElementById('roundEnd').classList.add('locked')
+    })
+}
 
 
 
