@@ -98,7 +98,8 @@ Als je nu de laatste link kopieert in een nieuw tabblad krijg je de cover te zie
 
 ### Socket events 
 <details>
-<summary>socket.on('start game', async function(id)</summary>
+<summary>#### socket.on('start game', async function(id)</summary>
+          
 Zodra een gebruiker op de website komt en zijn username heeft ingevuld wordt deze functie uitgevoerd. Er wordt gekeken of de value van de username niet leeg is, als dat wel zo is wordt de username gezet naar ANONYMOUS. Er wordt ook gekeken of de username niet al bestaat. Stel er is al een username genaamt Piet dan wordt de tweede username die Piet heeft Piet + het nummer van de lengte van de array met gebruikersnamen die meedoen aan de game. Ik wilde er eerst een random getal achter zetten maar ook hier kan het gebeuren dat 2 mensen met dezelfde naam dezelfde nummer krijgen. 
 
 Elke user die meedoet aan de game wordt in een array geplaatst waar de game resultaten en scores bij worden gehouden. Dit ziet er zo uit voor elke user: 
@@ -152,7 +153,8 @@ socket.on('player role', function(currantMovieTitle, currantMovieCover){
 </details>
 
 <details>
-<summary> socket.on('mouseMoving', function(data)</summary>
+<summary>#### socket.on('mouseMoving', function(data)</summary>
+          
 Om ervoor te zorgen dat het tekenen live te zien is moest ik de data die wordt gemaakt tijdens het tekenen doorsturen naar de server en die data weer doorsturen naar andere spelers. 
 
 Vanuit de client stuurde ik de data naar de server. Dit zit er in de data die ik mee stuur: 
@@ -215,7 +217,8 @@ Op deze manier worden de tekeningen doorgestuurd naar de andere users. Het is ei
 </details>
 
 <details>
-<summary>socket.on('chat message', function</summary>
+<summary>#### socket.on('chat message', function</summary>
+          
 In de chat functie wordt bij elk bericht die wordt verstuurd gekeken of daar het antwoord tussen zit van de film titel. Eerst wordt het bericht en de titel van de film omgezet naar hoofdletters zodat daar geen problemen in kunnen zitten. Vervolgens word er met deze if statement gekeken of de username van degene die raad niet overeenkomt met degene die aan het tekenen is. Dan moet ook het bericht overeenkomen met de titel.
 ```js
 if(drawPlayer !== userName && msgUpper === movieTitleUpper)
@@ -239,7 +242,7 @@ Ik wil ook nog een statement maken dat als de users die moest tekenen de titel i
 </details>
 
 <details>
-<summary>Chat messages: io.emit('chat message', `${userName}: ${msg}`, randomColor);</summary>
+<summary>#### Chat messages: io.emit('chat message', `${userName}: ${msg}`, randomColor);</summary>
 
 Chatberichten worden van de client naar de server gestuurd. Daar word gecheckt of het antwoord (de titel van de film) er in zit en zo niet dan wordt het bericht gewoon verstuurd naar iedereen. 
 
@@ -260,7 +263,7 @@ socket.on('chat message', function(msg, randomColor, gameResults){
 </details>
 
 <details>
-<summary>Server mesages: socket.emit('server message', `Welcome ${userName}!`);</summary>
+<summary>#### Server mesages: socket.emit('server message', `Welcome ${userName}!`);</summary>
 
 Hier zijn alle server messages op een rij die ik gebruik. Deze zitten op verschillende plekken in mijn code maar om het overzichtelijk te houden heb ik ze even onder elkaar gezet. 
 
