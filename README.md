@@ -1,5 +1,6 @@
 # Een real time teken spel
 ### Inhoudsopgave
+* [Opdracht](#Opdracht)
 
 ### Opdracht
 Het is de bedoeling dat we een applicatie maken met real time features. Dit kan je doen via socket.io. Je maakt gebruik van een externe dataset van een api en je kan ook de gebruikers de database laten vullen met data. De api hoeft zelf niet per se real time te zijn, als dit niet het geval is moet je ervoor zorgen dat je op een andere manier real time features laat zien. 
