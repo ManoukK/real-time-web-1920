@@ -1,5 +1,14 @@
 # Een real time teken spel
 ### Inhoudsopgave
+* [Opdracht](#Opdracht)
+* [Concept](#Concept)
+* [Data flow](#Data-flow)
+* [Installatie](#Installatie)
+* [API en de data](#API-en-de-data)
+* [Socket events](#Socket-events)
+* [Features](#Features)
+* [Bronnen](#Bronnen)
+* [Credits](#Credits)
 
 ### Opdracht
 Het is de bedoeling dat we een applicatie maken met real time features. Dit kan je doen via socket.io. Je maakt gebruik van een externe dataset van een api en je kan ook de gebruikers de database laten vullen met data. De api hoeft zelf niet per se real time te zijn, als dit niet het geval is moet je ervoor zorgen dat je op een andere manier real time features laat zien. 
@@ -30,7 +39,7 @@ Als de game is beëindigd krijgen de spelers een overzicht te zien van alle film
 Uiteindelijk wil ik ook een feature toevoegen waarbij je kan kiezen of je een game wilt starten over films of over series want de moviedb api bevat ook series. Zo krijgen mensen meer keuze en vrijheid in de game die ze willen spelen. Ook wil ik later als feature toevoegen dat mensen een game kunnen starten met films of series uit een bepaalde genre. 
 
 ### Data flow
-![photo_2020-04-20_18-12-17](https://user-images.githubusercontent.com/45541885/79774105-a6e74800-8332-11ea-90ba-105bf1b8725d.jpg)
+![defDLC](https://user-images.githubusercontent.com/45541885/80913494-48b06100-8d45-11ea-9a03-3efc258a113f.png)
 
 ### Installatie
 Mijn project kan je clonen en downloaden via de groene knop die rechts bovenin staat van github. Je hebt alleen opdracht 2 nodig. Als je dat hebt gedaan moet je nog de dependencies installeren die ik heb gebruikt voor dit project. Dat kan je doen door het volgende in de terminal te typen: 
@@ -51,6 +60,7 @@ Dit zijn de depencendies die worden geïnstalleerd zodra je dit hebt gedaan:
 - socket.io
 - node-fetch
 - express
+- dotenv
 
 De localhost die ik heb gebruikt heeft nummer 2000. Nu kan je de applicatie opstarten met:
 ```
@@ -59,14 +69,26 @@ npm start
 
 en kan je naar localhost:2000 om het “live” te zien. Als je zelf iets aanpast in de code start de server automatisch opnieuw op dankzij nodemon. Dan moet je alleen nog even de browser refreshen waar de applicatie in staat en dan zie je de aanpassingen die je hebt gemaakt. 
 
-### Data/API
+### API en de data
 De api die ik gebruik is movieDB: https://developers.themoviedb.org/3/getting-started/introduction Dit is een database met alle films en tv series die er zijn en die nog moeten komen. Voor dit project gebruik ik tot nu toe alleen nog de films. Als feature wil ik nog toevoegen dat de gebruiker zelf kan kiezen of hij een game wilt starten over films of series. De films uit de api bevatten ontzettend veel data. 
 
 ![Schermafbeelding 2020-04-26 om 18 37 55](https://user-images.githubusercontent.com/45541885/80314046-22dc0700-87ef-11ea-91b0-c813b1956f9a.png)
 
-Niet alle data heb ik nodig uit die api dus in de fetch heb ik het al opgeschoont. Hierdoor wordt de api wat fijner te gebruiken tijdens het coderen. Uiteindelijk wil ik alleen gebruik maken van de coverfoto van de film en de titel. 
+Niet alle data heb ik nodig uit die api dus in de fetch heb ik het al opgeschoont. Hierdoor wordt de api wat fijner te gebruiken tijdens het coderen. Uiteindelijk wil ik alleen gebruik maken van de coverfoto van de film en de titel. De id van de films vond ik ook handig om te hebben want zo kan ik ze altijd van elkaar onderscheiden als dat nodig is. 
 
-> Opgeschoonde api data screenshot
+```js
+.then(results => {
+          return results.map(results => {
+              return {
+                  movieTitle: results.title,
+                  movieImage: results.poster_path,
+                  movieID: results.id,
+              }
+            })
+          })
+```
+
+![Schermafbeelding 2020-05-03 om 11 56 47](https://user-images.githubusercontent.com/45541885/80913803-beb5c780-8d47-11ea-974f-fa37027263d0.png)
 
 De link naar de coverfoto van de films werken net even wat anders. In de api staat wel een link naar de cover toe alleen daar moet je nog iets voorzetten zodat het goed linkt. Je moet namelijk dit stukje ervoor zetten:
 ```
@@ -82,19 +104,225 @@ https://image.tmdb.org/t/p/w500/aOIuZAjPaRIE6CMzbazvcHuHXDc.jpg
 ```
 Als je nu de laatste link kopieert in een nieuw tabblad krijg je de cover te zien van de matrix en dit wil je ook zo hebben op je website. 
 
+
+### Socket events 
+<details>
+<summary>Users vult zijn username in</summary>
+          
+#### socket.on('start game', async function(id)
+          
+Zodra een gebruiker op de website komt en zijn username heeft ingevuld wordt deze functie uitgevoerd. Er wordt gekeken of de value van de username niet leeg is, als dat wel zo is wordt de username gezet naar ANONYMOUS. Er wordt ook gekeken of de username niet al bestaat. Stel er is al een username genaamt Piet dan wordt de tweede username die Piet heeft Piet + het nummer van de lengte van de array met gebruikersnamen die meedoen aan de game. Ik wilde er eerst een random getal achter zetten maar ook hier kan het gebeuren dat 2 mensen met dezelfde naam dezelfde nummer krijgen. 
+
+Elke user die meedoet aan de game wordt in een array geplaatst waar de game resultaten en scores bij worden gehouden. Dit ziet er zo uit voor elke user: 
+```js
+gameResults[userName] = {  
+       userId: socket.id,
+       wins: 0,
+       drawn: [],
+     };
+```
+
+Zodra er al 1 speler zich aan heeft gemeld wordt er een fetch gedaan naar de api en wordt daaruit data opgevraagd. Dit is dan ook waarom de ‘game start’ async is. De eerste speler die in de game komt heeft de rol van het tekenen. Diegene krijgt de titel en de cover van de film te zien met de opdracht dat diegene het moet tekenen. Ondertussen als er meerdere users binnenkomen krijgen zij het bericht dat zij moeten raden. In code zien die verschillen er zo uit: 
+
+```js
+     if(connectedUsers.length === 1){
+       apiResults = await getData();
+       movieLeftovers = apiResults;
+       showMovie(drawingRole);
+     } else {
+       socket.emit('player role', `player role guesser`)
+     }
+     socket.emit('server message', `Welcome ${userName}!`);
+     socket.broadcast.emit('server message', `${userName} joined the game!`);
+```
+
+In de functie showMovie heb ik dit stukje code erin die er daadwerkelijk voor zorgt dat de film data bij diegene komt die mag tekenen. Hiervoor moet je wel de id gebruiken van de users die socket zelf genereert voor jou. Dit werkt bijvoorbeeld niet met een username. 
+
+```js
+io.to(playerDrawId).emit('player role', currantMovieTitle, currantMovieCover);
+```
+
+OP de client wordt er gekeken welke data wie krijgt. Dat heb ik opgelost met een if else zodat ik voor beide partijen deze functie kon combineren omdat degene die moet tekenen ook het bericht krijgt die eigenlijk alleen naar degenen moeten gaan die moeten raden. 
+
+```js
+socket.on('player role', function(currantMovieTitle, currantMovieCover){
+   if(currantMovieTitle === 'player role guesser'){
+       const movieImages = document.getElementById('movielist');
+       movieImages.insertAdjacentHTML("beforeend", `<h2>Guess the movie in the chat</h2>`)
+       movieImages.insertAdjacentHTML("beforeend", `<p>The first one who guess the movie right wins this round! So be quick</p>`)
+       movieImages.insertAdjacentHTML("beforeend", `<img src="https://lh3.googleusercontent.com/proxy/2holoyWbQotj033yGIjGiTE_uiEJ9w6geWd8Ksosm_lMtP3alNLxCidD3CAofyQucLAyQCyw89Dd91nuOgnYWEstnGB7aC_pVHoGBROdlA4d6Ljv58qVmX19v-ecp5Se" alt="Cover image of a questionmark" >`)
+   } else {
+       const movieImages = document.getElementById('movielist');
+       movieImages.insertAdjacentHTML("beforeend", `<h1>Draw this movie:</h1>`)
+       movieImages.insertAdjacentHTML("beforeend", `<h2>${currantMovieTitle}</h2>`)
+       movieImages.insertAdjacentHTML("beforeend", `<p>Tip: if you don't know the movie, draw the poster</p>`)
+       movieImages.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`)
+   }
+})
+```
+
+</details>
+
+<details>
+<summary>User tekent een film na</summary>
+         
+#### socket.on('mouseMoving', function(data)
+      
+Om ervoor te zorgen dat het tekenen live te zien is moest ik de data die wordt gemaakt tijdens het tekenen doorsturen naar de server en die data weer doorsturen naar andere spelers. 
+
+Vanuit de client stuurde ik de data naar de server. Dit zit er in de data die ik mee stuur: 
+```js
+ 
+       let data = {
+           mouseValue,
+           x: e.offsetX,
+           y: e.offsetY
+       }
+```
+De mouseValue had ik nodig om later op de server te kunnen zien of de muis waarmee er getekend wordt start of stopt met tekenen of dat het bezig is. 
+
+Vervolgens stuur ik deze data naar de server. Dat doe ik op 2 punten. Wanneer een gebruiker bezig is met tekenen (dus de muis ingedrukt heeft en lijnen maakt op het canvas) en wanneer de gebruiker is gestopt met tekenen (dus wanneer de muis los gelaten is). Dit zit in 2 aparte functions op de client. In de stopInteract en in de putPoint function. 
+
+```
+socket.emit('mouseMoving', data);
+```
+
+Vervolgens wordt de ‘mouseMoving’ functie op de server aangeroepen. Daarin word met een switch gekeken in welke state het tekenen is (dat zit in de data.mouseValue). Voor elke state is er een case en in die case wordt de data van het tekenen doorgestuurd naar de andere spelers. Dat ziet er in de code zo uit: 
+```js
+switch(data.mouseValue){
+       case 'start':
+         let startPositionX = data.x;
+         let startPositionY = data.y;
+         socket.broadcast.emit('mouseStart', startPositionX, startPositionY, randomColor);
+ 
+         break;
+ 
+       case 'dragging':
+         let dragPositionX = data.x;
+         let dragPositionY = data.y;
+         socket.broadcast.emit('mouseMoving', dragPositionX, dragPositionY, randomColor);
+ 
+         break;
+ 
+       case 'stop':
+         let stopPositionX = data.x;
+         let stopPositionY = data.y;
+         socket.broadcast.emit('mouseStop', stopPositionX, stopPositionY);
+ 
+         break;
+ 
+         default:
+       return false
+       break;
+       }
+```
+
+Als deze data weer naar de client wordt gestuurd worden daar de benodigde function aangeroepen.
+
+```js
+socket.on('mouseMoving', whileDragging);
+socket.on('mouseStop', stop);
+socket.on('mouseStart', start);
+``` 
+
+Op deze manier worden de tekeningen doorgestuurd naar de andere users. Het is eigenlijk meer dat de data van het tekenen wordt doorgestuurd naar de andere users en dat het in hun canvas opnieuw wordt getekend. 
+
+</details>
+
+<details>
+<summary>Spelers proberen de film te raden</summary>
+          
+#### socket.on('chat message', function)
+          
+In de chat functie wordt bij elk bericht die wordt verstuurd gekeken of daar het antwoord tussen zit van de film titel. Eerst wordt het bericht en de titel van de film omgezet naar hoofdletters zodat daar geen problemen in kunnen zitten. Vervolgens word er met deze if statement gekeken of de username van degene die raad niet overeenkomt met degene die aan het tekenen is. Dan moet ook het bericht overeenkomen met de titel.
+```js
+if(drawPlayer !== userName && msgUpper === movieTitleUpper)
+```
+
+Als deze twee allebei true zijn krijgt degene die raad 1 punt en komt de titel van de film in een array te staan van degene die het moest tekenen. 
+```js
+    let setPoint = gameResults[userName].wins++;
+       const setMovieTitle = gameResults[drawPlayer].drawn;
+       setMovieTitle.push(currantMovieTitle);
+```
+
+Als een van de twee false is wordt het bericht gewoon verzonden naar de andere users. 
+
+```js
+       io.emit('chat message', `${userName}: ${msg}`, randomColor);
+```
+
+Ik wil ook nog een statement maken dat als de users die moest tekenen de titel in de chat zegt dat de ronde dan is afgelopen en dat niemand punten krijgt. Dat is misschien niet de netste oplossing maar voor nu wel de snelste. 
+
+</details>
+
+<details>
+<summary>Chat messages</summary>
+          
+#### io.emit('chat message', `${userName}: ${msg}`, randomColor);
+
+Chatberichten worden van de client naar de server gestuurd. Daar word gecheckt of het antwoord (de titel van de film) er in zit en zo niet dan wordt het bericht gewoon verstuurd naar iedereen. 
+
+Iedereen heeft zijn eigen kleur als hij/zij meedoet aan de game. Die wordt al gegenereerd zodra je op de website komt. Deze kleur wordt onder andere gebruikt voor bij het tekenen. Dan herkennen mensen sneller en beter wie welke rol heeft. Ook wordt deze kleur meegestuurd met de chatberichten. Dat is de randomColor die je misschien al in de titel zag. 
+
+```js
+io.emit('chat message', `${userName}: ${msg}`, randomColor);
+```
+
+In de client wordt er een border omheen geplaatst met die kleur. Deze kleur krijgt iedereen te zien ook jij als verstuurder van het bericht. 
+```js
+socket.on('chat message', function(msg, randomColor, gameResults){
+   console.log(gameResults)
+   const messages = document.getElementById("messages");
+   messages.insertAdjacentHTML("beforeend", `<li class="chatMSG" style="border: 5px solid ${randomColor};" >${msg}</li>`)
+});
+```
+</details>
+
+<details>
+<summary>Server mesages</summary>
+
+#### socket.emit('server message', `Welcome ${userName}!`);
+
+Hier zijn alle server messages op een rij die ik gebruik. Deze zitten op verschillende plekken in mijn code maar om het overzichtelijk te houden heb ik ze even onder elkaar gezet. 
+
+Als iemand inlogt krijgt diegene in de chat een welkomstberichtje. Andere zien weer een ander bericht met andere tekst erin. Ik vond het leuk om dit zo te doen omdat je het wat persoonlijker kan maken voor degene die net binnen is gekomen.
+
+Zodra iemand de titel goed heeft geraden krijg je dat ook in de chat te zien. In principe is dat overbodig omdat iedereen ook een pop-up ziet met de film en wie het heeft geraden. Het bericht in de chat kun je dan niet meer lezen. Alleen als de pop-up weer weg is, willen gebruikers het misschien nog terug lezen of nog even weten welke film het nu was. Daarom heb ik alsnog ervoor gekozen om ook dit naar de client te sturen ook al hebben ze er niet direct wat aan. 
+
+Daarna stuur ik ook een bericht als een user de game verlaat. Dit stuur ik naar iedereen in de game behalve degene die weggaat want hij/zij zal dat bericht niet meer lezen en dan is het ook niet zo handig of nodig om dat bericht ook naar hem/haar te sturen. 
+
+```js
+socket.emit('server message', `Welcome ${userName}!`);
+socket.broadcast.emit('server message', `${userName} joined the game!`);
+io.emit('server message', `${userName} guessed the movie! It was: ${movieTitleUpper}`);
+socket.broadcast.emit('server message', `${userName} has left the game!`);
+```
+</details>
+
+
 ### Features
 - [ ] Voordat de game start spelers laten kiezen tussen films of series.
 - [ ] Voordat de game start spelers laten kiezen tussen genres.
 - [ ] Puntentelling wie het snelst raad krijgt meer punten en wie als laatste raad het minst.
 - [ ] Timer toevoegen van hoelang elke ronde duurt en zodra de timer af gaat begint automatisch de volgende ronde. 
+- [ ] Gebruikers een account laten aanmaken zodat de hun scores van alle games worden bijhouden. Je ziet dan in totaal hoeveel films je moest raden en hoeveel je daarvan goed hebt geraden en je ziet hoeveel tekeningen je hebt gemaakt. 
+- [ ] De benoemde data van het punt hierboven opslaan in een database.
 
 ### Bronnen
 - Cheat sheet van socket.io: https://socket.io/docs/emit-cheatsheet/
 - Hoe je de user id krijgt van socket: https://stackoverflow.com/questions/43464617/how-to-get-user-id-using-username-in-socket-io
-- 
+- .env met behulp van dit filmpje: https://www.youtube.com/watch?v=zDup0I2VGmk
+- Hoe je een random kleur genereerd: https://dev.to/akhil_001/generating-random-color-with-single-line-of-js-code-fhj
+- Hoe je usernames kan bijhouden in een array: https://stackoverflow.com/questions/18335028/socket-io-how-to-prompt-for-username-and-save-the-username-in-an-array
+- Hoe je een if statement schrijft waarbij 2 waardes true moeten zijn: https://stackoverflow.com/questions/8710442/how-to-specify-multiple-conditions-in-an-if-statement-in-javascript
+- Hoe je met de muis kan tekenen in canvas: https://www.youtube.com/watch?v=m4sioSqlXhQ en https://www.youtube.com/watch?v=XbS2bLMzcrk
+- Het tekenen real time maken: https://www.youtube.com/watch?v=i6eP1Lw4gZk
 
 ### Credits
-- Tekenen in een canvas: 
+- Tekenen in een canvas: https://www.youtube.com/watch?v=m4sioSqlXhQ en https://www.youtube.com/watch?v=XbS2bLMzcrk
 - Robin had me geholpen met het opslaan van user data op de server. 
 - Coen had feedback gegeven op mijn data life chart
-- 
+- et tekenen real time maken: https://www.youtube.com/watch?v=i6eP1Lw4gZk
+- .env met behulp van dit filmpje: https://www.youtube.com/watch?v=zDup0I2VGmk
+- Maikel heeft me geholpen met de switch bij het tekenen zodat er gekeken word in welke staat de tekenaar is met zijn muis. 
