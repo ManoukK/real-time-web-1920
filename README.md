@@ -318,6 +318,7 @@ socket.broadcast.emit('server message', `${userName} has left the game!`);
 - Hoe je een if statement schrijft waarbij 2 waardes true moeten zijn: https://stackoverflow.com/questions/8710442/how-to-specify-multiple-conditions-in-an-if-statement-in-javascript
 - Hoe je met de muis kan tekenen in canvas: https://www.youtube.com/watch?v=m4sioSqlXhQ en https://www.youtube.com/watch?v=XbS2bLMzcrk
 - Het tekenen real time maken: https://www.youtube.com/watch?v=i6eP1Lw4gZk
+- Hoe je een html element leeg maakt in javascript: https://stackoverflow.com/questions/5744233/how-to-empty-the-content-of-a-div
 
 ### Credits
 - Tekenen in een canvas: https://www.youtube.com/watch?v=m4sioSqlXhQ en https://www.youtube.com/watch?v=XbS2bLMzcrk
@@ -326,3 +327,4 @@ socket.broadcast.emit('server message', `${userName} has left the game!`);
 - et tekenen real time maken: https://www.youtube.com/watch?v=i6eP1Lw4gZk
 - .env met behulp van dit filmpje: https://www.youtube.com/watch?v=zDup0I2VGmk
 - Maikel heeft me geholpen met de switch bij het tekenen zodat er gekeken word in welke staat de tekenaar is met zijn muis. 
+- Hoe je een html element leeg maakt in javascript: https://stackoverflow.com/questions/5744233/how-to-empty-the-content-of-a-div
