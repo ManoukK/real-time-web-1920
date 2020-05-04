@@ -320,6 +320,7 @@ socket.broadcast.emit('server message', `${userName} has left the game!`);
 - Het tekenen real time maken: https://www.youtube.com/watch?v=i6eP1Lw4gZk
 - Hoe je een html element leeg maakt in javascript: https://stackoverflow.com/questions/5744233/how-to-empty-the-content-of-a-div
 - Value van een input leeg maken zodra iemand een berichtje heeft verstuurd: https://www.w3schools.com/jsref/met_form_reset.asp
+- Hoe je een object uit een array kan verwijderen: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/delete
 
 ### Credits
 - Tekenen in een canvas: https://www.youtube.com/watch?v=m4sioSqlXhQ en https://www.youtube.com/watch?v=XbS2bLMzcrk
