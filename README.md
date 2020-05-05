@@ -82,27 +82,48 @@ npm start
 en kan je naar localhost:2000 om het “live” te zien. Als je zelf iets aanpast in de code start de server automatisch opnieuw op dankzij nodemon. Dan moet je alleen nog even de browser refreshen waar de applicatie in staat en dan zie je de aanpassingen die je hebt gemaakt. 
 
 ### API en de data
-De api die ik gebruik is movieDB: https://developers.themoviedb.org/3/getting-started/introduction Dit is een database met alle films en tv series die er zijn en die nog moeten komen. Voor dit project gebruik ik tot nu toe alleen nog de films. Als feature wil ik nog toevoegen dat de gebruiker zelf kan kiezen of hij een game wilt starten over films of series. De films uit de api bevatten ontzettend veel data. 
+De api die ik gebruik is movieDB: https://developers.themoviedb.org/3/getting-started/introduction Dit is een database met alle films en tv series die er zijn en die nog moeten komen. Voor dit project gebruik ik de data van films en series. Als feature heb ik namelijk dat de gebruiker zelf kan kiezen of hij een game wilt starten over films of series. De films en seriesuit de api bevatten ontzettend veel data. 
 
+#### Data van de films uit de api
 ![Schermafbeelding 2020-04-26 om 18 37 55](https://user-images.githubusercontent.com/45541885/80314046-22dc0700-87ef-11ea-91b0-c813b1956f9a.png)
 
-Niet alle data heb ik nodig uit die api dus in de fetch heb ik het al opgeschoont. Hierdoor wordt de api wat fijner te gebruiken tijdens het coderen. Uiteindelijk wil ik alleen gebruik maken van de coverfoto van de film en de titel. De id van de films vond ik ook handig om te hebben want zo kan ik ze altijd van elkaar onderscheiden als dat nodig is. 
+#### Data van de series uit de api 
+![Schermafbeelding 2020-05-05 om 15 17 01](https://user-images.githubusercontent.com/45541885/81076781-5e13bf80-8eec-11ea-81d6-680e12457050.png)
 
+er zitten kleine verschillen tussen de data van de films en series. Een daarvan is dat de titel van de serie onder name staat en bij de films staat het onder title. Dit zorgt ervoor dat ik 2 losse fetches moest implementeren in mijn code omdat ik anders niet de juiste titels van series en films in 1 keer kon pakken. Het fetchen word pas gedaan zodra de eerste gebruiker die op de site komt een keuze heeft gemaakt tussen een game met films of met series. Aan de hand van die keuze word 1 fetch uitgevoerd en de ander niet. 
+
+Niet alle data heb ik nodig uit die api dus in de fetch heb ik het al opgeschoont. Hierdoor wordt de api wat fijner te gebruiken tijdens het coderen. Uiteindelijk wil ik alleen gebruik maken van de coverfoto van de film of serie en de titel. De id van de films/series vond ik ook handig om te hebben want zo kan ik ze altijd van elkaar onderscheiden als dat nodig is. 
+
+#### Het opschonen van film data
 ```js
 .then(results => {
           return results.map(results => {
               return {
-                  movieTitle: results.title,
-                  movieImage: results.poster_path,
-                  movieID: results.id,
+                  title: results.title,
+                  image: results.poster_path,
+                  id: results.id,
               }
             })
           })
 ```
 
+#### Het opschonen van serie data
+```js
+.then(results => {
+          return results.map(results => {
+              return {
+                  title: results.name,
+                  image: results.poster_path,
+                  id: results.id,
+              }
+            })
+          })
+```
+Beide krijgen dezelfde benamen voor afbeeldingen, titels en id's zodat het in de rest van de code werkt voor beide partijen. 
+
 ![Schermafbeelding 2020-05-03 om 11 56 47](https://user-images.githubusercontent.com/45541885/80913803-beb5c780-8d47-11ea-974f-fa37027263d0.png)
 
-De link naar de coverfoto van de films werken net even wat anders. In de api staat wel een link naar de cover toe alleen daar moet je nog iets voorzetten zodat het goed linkt. Je moet namelijk dit stukje ervoor zetten:
+De link naar de coverfoto van de films/series werken net even wat anders. In de api staat wel een link naar de cover toe alleen daar moet je nog iets voorzetten zodat het goed linkt. Je moet namelijk dit stukje ervoor zetten:
 ```
 https://image.tmdb.org/t/p/w500
 ```
