@@ -330,6 +330,34 @@ Zodra de ronde voorbij is word het canvas geleegt voor de nieuwe tekenaar. Alle 
 </details>
 
 <details>
+<summary>User verlaat de game</summary>
+
+####  socket.on('disconnect', function()
+
+Zodra er een user de game verlaat gebeuren er een aantal dingen. Allereerst wordt er een server bericht gestuurd naar de rest van de users in de game om hun op de hoogte te houden. 
+```js
+socket.broadcast.emit('server message', `${userName} has left the game!`);
+```
+
+Vervolgens verwijder ik ook de user uit de lijst van connectedUsers. Hierin houd ik bij wie er allemaal online zijn en als iemand de game verlaat wil ik die er ook niet meer in hebben. Hiervoor moet ik eerst de juiste index weten van de user zodat ik niet per ongeluk iemand anders eruit kick. Vervolgens gaat de code naar de if statement. Dit gaat door zodra de userPosition groter of gelijk is aan 0. Dit moest omdat socket ook -1 waardes doorstuurt. Dat is denk ik om te checken of iemand nog aanwezig is en -1 duidt aan dat het zo is. Als het dus geen -1 is word de user verwijderd uit de connectedUsers array en word de user ook verwijderd uit de meta data die de hele game bijgehouden wordt. 
+
+```js
+   let userPosition = connectedUsers.indexOf(userName);
+   if (userPosition >= 0){
+     connectedUsers.splice(userPosition, 1);
+ 
+     delete gameResults[userName];
+   }
+```
+
+Als dat gebeurd is wordt ook het scorebord geupdate zodat ook daar de user niet meer in staat. Dat gebeurd met dit stukje code:
+
+```js
+io.emit('score board', gameResults);
+```
+</details>
+
+<details>
 <summary>Spelers proberen de film te raden</summary>
           
 #### socket.on('chat message', function)
