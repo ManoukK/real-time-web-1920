@@ -540,6 +540,7 @@ Eerst haal ik alle content leeg die binnen het scorebord element zit. Zo zorg ik
 - [ ] Benamingen in code generiek maken in plaats van movieTitles moet het titles worden.
 - [ ] Eind pagina met eind score.
 - [ ] Rooms aanmaken zodat er meerdere games tegelijkertijd gespeelt kunnen worden.
+- [ ] Fixen dat alleen de speler die moet tekenen kan tekenen in het canvas.
 
 ### Bronnen
 - Cheat sheet van socket.io: https://socket.io/docs/emit-cheatsheet/
