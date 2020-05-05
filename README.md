@@ -194,7 +194,67 @@ socket.on('player role', function(currantMovieTitle, currantMovieCover){
     document.getElementById('quessRole').classList.add('locked')
 });
 ```
+</details>
 
+<details>
+<summary>User laten kiezen tussen game mode films of series</summary>
+
+#### socket.on('game mode', async function(gameMode) en socket.on('choose mode', function()
+Game mode wordt geactiveerd nadat de allereerste gebruiker op de website komt. De eerste gebruiker heeft, nadat hij/zij zijn username heeft ingevuld, de keuze om de game te beginnen met films of series. Dit kan alleen de eerste gebruiker doen dankzij het io.to event van socket. Dit heb ik in een ander stukje beter uitgelegd. 
+
+Zo ziet dat stukje code eruit op de server. Deze code staat in socket.on('start game', function(id)
+
+```js
+   if(connectedUsers.length === 1){
+       const playerDrawId = Object.values(gameResults)[drawingRole].userId;
+       io.emit;
+       io.to(playerDrawId).emit('choose mode');
+     }
+
+```
+
+De user heeft nu twee knoppen in beeld waaruit hij/zij kan kiezen. Beide knoppen sturen iets naar de function “game mode”. Dankzij die waarde kan ik in de server bepalen welke api fetch er gedaan moet worden. 
+
+```js
+socket.on('choose mode', function(){
+   document.getElementById('gameMode').classList.remove('locked');
+   document.getElementById('usernameForm').classList.add('locked');
+   document.getElementById('game').classList.add('locked');
+ 
+   const chooseMovie = document.getElementById('gameModeMovie')
+   chooseMovie.addEventListener('click', function() {
+       document.getElementById('game').classList.remove('locked');
+       document.getElementById('gameMode').classList.add('locked');
+       socket.emit("game mode", "movie");
+   })
+  
+   const chooseSerie = document.getElementById('gameModeSerie')
+   chooseSerie.addEventListener('click', function() {
+       document.getElementById('game').classList.remove('locked');
+       document.getElementById('gameMode').classList.add('locked');
+       socket.emit("game mode", "serie");
+   })
+})
+
+```
+
+Zodra er een keuze is gemaakt wordt het doorgestuurd naar de server in de ‘game mode’ function. Dankzij de tekst die ik meestuur vanaf de client kan de server met een if statement zien of de user films of series wilt hebben. Zo kan de juiste api fetch worden gedaan. Er moeten twee verschillende api fetches worden gedaan omdat de benamingen in de api voor films en series anders zijn. Hierover kan je meer lezen onder het kopje api/data
+
+```js
+ socket.on('game mode', async function(gameMode){
+   if (gameMode === "movie"){
+       apiResults = await getMovieData();
+       leftoversToDraw = apiResults;
+       showTitle(drawingRole);
+ 
+   }else if (gameMode === "serie"){
+     apiResults = await getSerieData();
+     leftoversToDraw = apiResults;
+     showTitle(drawingRole);
+   }
+ })
+
+```
 </details>
 
 <details>
