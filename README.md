@@ -15,6 +15,11 @@ Het is de bedoeling dat we een applicatie maken met real time features. Dit kan 
 
 Het is ook de bedoeling dat je ervoor zorgt dat elke bezoeker/gebruiker content krijgt die hij/zij nodig heeft. Dit is voor elke gebruiker weer anders.
 
+#### Mijn uiteindelijke website
+![Schermafbeelding 2020-05-05 om 15 42 37](https://user-images.githubusercontent.com/45541885/81073536-10955380-8ee8-11ea-93ea-514390642094.png)
+
+Als je meer schermen wilt zien zonder de website te bezoeken ga dan hier heen: https://github.com/ManoukK/real-time-web-1920/wiki/Alle-pagina's-van-de-site
+
 ### Concept
 Mijn concept is een game waarbij de ene speler een film krijgt die hij moet tekenen waarna speler 2 moet raden welke film speler 1 heeft getekend. Op deze manier kunnen spelers punten verdienen. Komen er meer spelers bij dan kunnen zij ook de film raden. 
 
