@@ -500,6 +500,34 @@ io.to(playerDrawId).emit('choose mode');
 
 </details>
 
+<details>
+<summary>Scorebord bijhouden</summary>
+
+#### io.emit('score board', gameResults);
+In de website wilde ik ook graag een scorebord bijhouden voor alle gebruikers. Op 3 verschillende punten emit/stuur ik de gameResults naar de client die vanuit daar de scores update. Ik update de score wanneer iemand op de website komt, wanneer iemand de website/game verlaat en wanneer de game naar de volgende ronde gaat. 
+
+Vanuit deze drie punten op de server stuur ik dus de scores door naar de client. Daar word deze functie aangeroepen:
+
+```js
+socket.on('score board', function(gameResults){
+   const scoreBoard = document.getElementById("scoreBoard");
+   while(scoreBoard.firstChild) scoreBoard.firstChild.remove();
+   scoreBoard.insertAdjacentHTML("beforeend", `<h2>Scoreboard</h2>`);
+   const score = new Map(
+       Object.entries(gameResults).map(
+           ([key, value]) => [key, value["wins"],
+           console.log("test", key, value),
+           scoreBoard.insertAdjacentHTML("beforeend", `<p>${key}: ${value.wins}</p>`),
+       ])
+   );
+});
+```
+
+Eerst haal ik alle content leeg die binnen het scorebord element zit. Zo zorg ik ervoor dat er geen dubbele gegevens komen te staan. vervolgens map ik over de array heen en pak ik daaruit de usernamen en de score die daar bij hoort. Omdat de array (gameResults) bestaat uit objecten moest ik daarvoor Object.entries gebruiken.
+
+</details>
+
+
 
 
 ### Features
