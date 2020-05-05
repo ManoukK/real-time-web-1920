@@ -26,8 +26,6 @@ let movieLeftovers = [];
 let randomMovie = [];
 let drawingRole = 0;
 
-// let drawPlayer = Object.keys(gameResults)[0];
-
 io.on('connection', function(socket){ 
   //https://dev.to/akhil_001/generating-random-color-with-single-line-of-js-code-fhj
   const randomColor = '#'+Math.floor(Math.random()*16777215).toString(16);
@@ -60,48 +58,98 @@ io.on('connection', function(socket){
         drawn: [],
       };
 
+      io.emit('score board', gameResults);
+
       if(connectedUsers.length === 1){
         apiResults = await getData();
         movieLeftovers = apiResults;
-        // console.log(movieLeftovers.length);
-        // console.log(apiResults.length);
-        console.log(drawingRole);
-        // let setDrawingRole = 0;
-        // drawPlayer = Object.keys(gameResults)[setDrawingRole];
-
-        // let setPoint = gameResults[userName].wins++;
-
+ 
         showMovie(drawingRole);
       } else {
-        socket.emit('player role', `player role guesser`)
+        // socket.emit('player role', `player role guesser`)
       }
-
       socket.emit('server message', `Welcome ${userName}!`);
       socket.broadcast.emit('server message', `${userName} joined the game!`);
+
+      // let userNameTest = Object.keys(gameResults)[userName];
+      // const playerDrawId = Object.values(gameResults)[drawingRole].wins;
+      // console.log(gameResults);
+      // var result = gameResults.map(a => a.wins);
+      // console.log(result);
+
+      // console.log("username", userName)
+      // let findUserIndex = connectedUsers.indexOf(userName);
+      // console.log("find", find)
+
+      // const startingPoint = 0
+      // let findUserIndex = connectedUsers.indexOf(userName);
+      // io.emit('score board', gameResults, findUserIndex);
   });
 
   socket.on('chat message', function(msg){   
-    movieTitleCheck(msg, gameResults); 
-      // console.log("test", randomMovie);
-      // const currantMovieTitle = Object.values(randomMovie)[0].movieTitle;
-      // const movieTitleCheck = currantMovieTitle.toUpperCase();
-      // const msgCheck = msg.toUpperCase();
+    // movieTitleCheck(msg, gameResults); 
+    // console.log(gameResults);
+    let drawPlayer = Object.keys(gameResults)[drawingRole];
+    const currantMovieTitle = Object.values(movieLeftovers)[0].movieTitle;
+    const movieTitleUpper = currantMovieTitle.toUpperCase();
+    const msgUpper = msg.toUpperCase();
 
-      // if(msgCheck === movieTitleCheck){
-      //   io.emit('chat message', `${userName}: ${msg}`, randomColor);
-      //   io.emit('server message', `${userName} guessed the movie! It was: ${movieTitleCheck}`);
-      //   console.log("WOOW");
+    //hoe je een if statement schrijft met 2 waardes die true moeten zijn.
+    //https://stackoverflow.com/questions/8710442/how-to-specify-multiple-conditions-in-an-if-statement-in-javascript
+    if(drawPlayer !== userName && msgUpper === movieTitleUpper){
+      io.emit('chat message', `${userName}: ${msg}`, randomColor, gameResults);
+      io.emit('server message', `${userName} guessed the movie! It was: ${movieTitleUpper}`);
 
-      //   const drawnByPlayer = gameResults[drawPlayer].drawn;
-      //   drawnByPlayer.push({
-      //     filmName: movieTitleCheck
-      //     // drawing: 
-      //   });
+      const currantMovieTitle = Object.values(movieLeftovers)[0].movieTitle;
+      const currantMovieCover = Object.values(movieLeftovers)[0].movieImage;
+      io.emit('player guessed movie', currantMovieTitle, currantMovieCover, userName);
 
-      //   randomMovie.length = 0;
-      // } else {
-      //   io.emit('chat message', `${userName}: ${msg}`, randomColor);
-      // }
+      let setPoint = gameResults[userName].wins;
+      setPoint += 2;
+
+      console.log(setPoint);
+      const setMovieTitle = gameResults[drawPlayer].drawn;
+      setMovieTitle.push(currantMovieTitle);
+
+      io.emit('score board', gameResults);
+
+      if(drawingRole === (connectedUsers.length - 1)){
+        drawingRole = 0;
+      }else{
+        drawingRole++;
+      }
+
+      movieLeftovers.splice(0, 1);
+      showMovie(drawingRole);
+
+      randomMovie.length = 0;
+
+    } else if (drawPlayer === userName && msgUpper === movieTitleUpper){
+      io.emit('chat message', `${userName}: ${msg}`, randomColor, gameResults);
+      io.emit('server message', `Nobody guessed the movie... It was: ${movieTitleUpper}`);
+
+      const currantMovieTitle = Object.values(movieLeftovers)[0].movieTitle;
+      const currantMovieCover = Object.values(movieLeftovers)[0].movieImage;
+      io.emit('player guessed movie', currantMovieTitle, currantMovieCover, `Nobody`);
+
+
+      const setMovieTitle = gameResults[drawPlayer].drawn;
+      setMovieTitle.push(currantMovieTitle);
+
+      if(drawingRole === (connectedUsers.length - 1)){
+        drawingRole = 0;
+      }else{
+        drawingRole++;
+      }
+
+      movieLeftovers.splice(0, 1);
+      showMovie(drawingRole);
+
+      randomMovie.length = 0;
+
+    } else {
+      io.emit('chat message', `${userName}: ${msg}`, randomColor, gameResults);
+    }
   });
 
   socket.on('mouseMoving', function(data){
@@ -130,16 +178,28 @@ io.on('connection', function(socket){
           default:
         return false
         break;
-        
         }
   });
 
   socket.on('disconnect', function(){
+    console.log(connectedUsers);
     socket.broadcast.emit('server message', `${userName} has left the game!`);
     let userPosition = connectedUsers.indexOf(userName);
-
-    if (userPosition >= 0)
+    console.log(gameResults)
+    // connectedUsers.splice(userPosition, 1);
+    if (userPosition >= 0){
       connectedUsers.splice(userPosition, 1);
+
+      // let removeUser = Object.keys(gameResults)[userPosition];
+      // delete removeUser;
+
+      delete gameResults[userName];
+
+      // gameResults.splice(userPosition, 1);
+    }
+    console.log("after delete", gameResults);
+    console.log(connectedUsers);
+    io.emit('score board', gameResults);
   });
 
   async function getData(){
@@ -172,92 +232,13 @@ io.on('connection', function(socket){
     }
 
   function showMovie(drawingRole){
-    console.log("in showmovie function", drawingRole)
     const playerDrawId = Object.values(gameResults)[drawingRole].userId;
-    console.log(playerDrawId);
-    randomMovieGenerator(gameResults);
-    const currantMovieTitle = Object.values(randomMovie)[drawingRole].movieTitle;
-    console.log(currantMovieTitle);
-    const currantMovieCover = Object.values(randomMovie)[drawingRole].movieImage;
-    console.log(currantMovieCover);
+    const currantMovieTitle = Object.values(movieLeftovers)[0].movieTitle;
+    const currantMovieCover = Object.values(movieLeftovers)[0].movieImage;
     io.emit;
+
     io.to(playerDrawId).emit('player role', currantMovieTitle, currantMovieCover);
   }
-
-  function randomMovieGenerator(gameResults){
-    // randomMovie.length = 0;
-    // const drawPlayer = Object.keys(gameResults)[0];
-    const movieListLength = apiResults.length;
-    const randomNumber = Math.floor(Math.random() * movieListLength);
-    const oneRandomMovie = apiResults[randomNumber];
-    // const drawnByPlayer = gameResults[drawPlayer].drawn;
-    // drawnByPlayer.push({
-    //   filmName: oneRandomMovie.movieTitle
-    // });
-    movieLeftovers.splice(randomNumber, 1);
-
-    randomMovie.push(oneRandomMovie);
-  }
-
-  function movieTitleCheck(msg, gameResults){
-      let drawPlayer = Object.keys(gameResults)[0];
-      const currantMovieTitle = Object.values(randomMovie)[0].movieTitle;
-      const movieTitleUpper = currantMovieTitle.toUpperCase();
-      const msgUpper = msg.toUpperCase();
-
-      //hoe je een if statement schrijft met 2 waardes die true moeten zijn.
-      //https://stackoverflow.com/questions/8710442/how-to-specify-multiple-conditions-in-an-if-statement-in-javascript
-      if(drawPlayer !== userName && msgUpper === movieTitleUpper){
-        io.emit('chat message', `${userName}: ${msg}`, randomColor);
-        io.emit('server message', `${userName} guessed the movie! It was: ${movieTitleUpper}`);
-
-        const currantMovieTitle = Object.values(randomMovie)[0].movieTitle;
-        const currantMovieCover = Object.values(randomMovie)[0].movieImage;
-        io.emit('player guessed movie', currantMovieTitle, currantMovieCover, userName);
-
-        console.log(gameResults);
-        let setPoint = gameResults[userName].wins++;
-        drawingRole++;
-        console.log("in chat", drawingRole)
-        // let setDrawingRole = drawPlayer;
-        // setDrawingRole++;
-        // console.log(drawPlayer);
-        // console.log(setDrawingRole);
-
-        // drawPlayer = Object.keys(gameResults)[setDrawingRole];
-        // console.log(gameResults);
-        // console.log(drawPlayer);
-        randomMovieGenerator(gameResults);
-        //nog de juiste user aan meegegeven :PPPP
-        showMovie(drawingRole);
-        // searchNewDrawPlayer = gameResults.indexOf(drawPlayer);
-        // console.log(searchNewDrawPlayer);
-
-        // socket.on('save game data of round', function(drawing){
-        //   const drawnByPlayer = gameResults[drawPlayer].drawn;
-        //   drawnByPlayer.push({
-        //     filmNameTest: movieTitleUpper,
-        //     test: "hallo",
-        //     testTwee: drawing,
-        //   });
-        //   console.log("joepie", drawnByPlayer);
-        // })
-
-        // const drawnByPlayer = gameResults[drawPlayer].drawn;
-        // drawnByPlayer.push({
-        //   filmNameTest: movieTitleUpper,
-        //   test: "hallo",
-        //   testTwee: drawing,
-        // });
-
-        // console.log("joepie", drawnByPlayer);
-
-        randomMovie.length = 0;
-      } else {
-        io.emit('chat message', `${userName}: ${msg}`, randomColor);
-      }
-  }
-
 })
 
 app.get('/test', function(req, res){

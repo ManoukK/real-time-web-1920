@@ -93,10 +93,6 @@ function whileDragging(dragPositionX, dragPositionY, randomColor) {
     context.moveTo(dragPositionX, dragPositionY); 
 };
 
-// const usernameSend = document.getElementById("usernameForm");
-// usernameSend.addEventListener('submit', usernameInput);
-
-
 const usernameSend = document.getElementById('usernameButton')
 
 usernameSend.addEventListener('click', function() {
@@ -115,6 +111,8 @@ function inputText(event){
     const inputField = document.getElementById("m");
     console.log(inputField.value);
     socket.emit("chat message", inputField.value);
+    const chatForm = document.getElementById("messageForm");
+    chatForm.reset();
 };
 
 socket.on('server message', function(msg){
@@ -122,53 +120,92 @@ socket.on('server message', function(msg){
     messages.insertAdjacentHTML("beforeend", `<li class="serverMSG">${msg}</li>`);
 });
 
-socket.on('chat message', function(msg, randomColor){
+socket.on('chat message', function(msg, randomColor, gameResults){
+    // console.log(gameResults)
     const messages = document.getElementById("messages");
     messages.insertAdjacentHTML("beforeend", `<li class="chatMSG" style="border: 5px solid ${randomColor};" >${msg}</li>`)
 });
 
 socket.on('player role', function(currantMovieTitle, currantMovieCover){
-    if(currantMovieTitle === 'player role guesser'){
-        const movieImages = document.getElementById('movielist');
-        movieImages.insertAdjacentHTML("beforeend", `<h2>Guess the movie in the chat</h2>`)
-        movieImages.insertAdjacentHTML("beforeend", `<p>The first one who guess the movie right wins this round! So be quick</p>`)
-        movieImages.insertAdjacentHTML("beforeend", `<img src="https://lh3.googleusercontent.com/proxy/2holoyWbQotj033yGIjGiTE_uiEJ9w6geWd8Ksosm_lMtP3alNLxCidD3CAofyQucLAyQCyw89Dd91nuOgnYWEstnGB7aC_pVHoGBROdlA4d6Ljv58qVmX19v-ecp5Se" alt="Cover image of a questionmark" >`)
-    } else {
-        const movieImages = document.getElementById('movielist');
-        movieImages.insertAdjacentHTML("beforeend", `<h1>Draw this movie:</h1>`)
-        movieImages.insertAdjacentHTML("beforeend", `<h2>${currantMovieTitle}</h2>`)
-        movieImages.insertAdjacentHTML("beforeend", `<p>Tip: if you don't know the movie, draw the poster</p>`)
-        movieImages.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`)
-    }
-})
+    const movieInfomation = document.getElementById('drawRole');
+    while(movieInfomation.firstChild) movieInfomation.firstChild.remove();
+    movieInfomation.insertAdjacentHTML("beforeend", `<h1>Draw this movie:</h1>`)
+    movieInfomation.insertAdjacentHTML("beforeend", `<h2>${currantMovieTitle}</h2>`)
+    movieInfomation.insertAdjacentHTML("beforeend", `<p>Tip: if you don't know the movie, draw the poster</p>`)
+    movieInfomation.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`)
 
-// saveDrawing();
+    document.getElementById('drawRole').classList.remove('locked')
+    document.getElementById('quessRole').classList.add('locked')
+    
+
+    // if(currantMovieTitle === 'player role guesser'){
+    //     document.getElementById('quessRole').classList.remove('locked')
+    //     document.getElementById('drawRole').classList.add('locked')
+    //     // const movieImages = document.getElementById('movielist');
+    //     // movieImages.insertAdjacentHTML("beforeend", `<h2>Guess the movie in the chat</h2>`)
+    //     // movieImages.insertAdjacentHTML("beforeend", `<p>The first one who guess the movie right wins this round! So be quick</p>`)
+    //     // // movieImages.insertAdjacentHTML("beforeend", `<img src="https://github.com/ManoukK/real-time-web-1920/blob/master/docs_opdracht2/public/img/guestionmark.png" alt="Cover image of a questionmark" >`)
+    //     // movieImages.insertAdjacentHTML("beforeend", `<img src="../img/guestionmark.png" alt="Cover image of a questionmark" >`)
+    // } else {
+    //     const movieImages = document.getElementById('drawRole');
+    //     movieImages.insertAdjacentHTML("beforeend", `<h1>Draw this movie:</h1>`)
+    //     movieImages.insertAdjacentHTML("beforeend", `<h2>${currantMovieTitle}</h2>`)
+    //     movieImages.insertAdjacentHTML("beforeend", `<p>Tip: if you don't know the movie, draw the poster</p>`)
+    //     movieImages.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`)
+
+    //     document.getElementById('drawRole').classList.remove('locked')
+    //     document.getElementById('quessRole').classList.add('locked')
+    // }
+});
 
 socket.on('player guessed movie', function(currantMovieTitle, currantMovieCover, userName){
-    const showMovie = document.getElementById('roundEnd');
+    const showMovie = document.getElementById('informationAboutMovie');
     const showWinner = document.getElementById('informationTextAboutRound');
-    showWinner.insertAdjacentHTML("beforeend", `<h1>The movie was: <br> ${currantMovieTitle}</h1>`)
-    showWinner.insertAdjacentHTML("beforeend", `<h2>${userName} is the winner of this round!</h2>`)
-    showWinner.insertAdjacentHTML("beforeend", `<p>${userName} gets 1 point</p>`)
-    showMovie.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`)
-    document.getElementById('roundEnd').classList.remove('locked')
-    document.getElementById('game').classList.add('locked')
+
+    //Hoe je een html element leeg maakt in javascript: 
+    //https://stackoverflow.com/questions/5744233/how-to-empty-the-content-of-a-div
+    while(showWinner.firstChild) showWinner.firstChild.remove();
+    while(showMovie.firstChild) showMovie.firstChild.remove();
+
+    showWinner.insertAdjacentHTML("beforeend", `<h1>The movie was: <br> ${currantMovieTitle}</h1>`);
+    showWinner.insertAdjacentHTML("beforeend", `<h2>${userName} is the winner of this round!</h2>`);
+    showWinner.insertAdjacentHTML("beforeend", `<p>${userName} gets 1 point</p>`);
+    showMovie.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`);
+    
+    document.getElementById('roundEnd').classList.remove('locked');
+    document.getElementById('game').classList.add('locked');
+
+    document.getElementById('quessRole').classList.remove('locked');
+    document.getElementById('drawRole').classList.add('locked');
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    const scoreBoard = document.getElementById("scoreBoard");
+    while(scoreBoard.firstChild) scoreBoard.firstChild.remove();
+
     click();
-    // window.location = document.getElementById("canvas").toDataURL('image/png');
-    // socket.emit("save game data of round", window.location);
-    // alert("Hello! I am an alert box!!");
 });
 
 function click(){
     const buttonNextRound = document.getElementById('goToNextRound');
     buttonNextRound.addEventListener("click", function(){
-        document.getElementById('game').classList.remove('locked')
-        document.getElementById('roundEnd').classList.add('locked')
-    })
-}
+        document.getElementById('game').classList.remove('locked');
+        document.getElementById('roundEnd').classList.add('locked');
+    });
+};
 
 
-
+socket.on('score board', function(gameResults){
+    const scoreBoard = document.getElementById("scoreBoard");
+    while(scoreBoard.firstChild) scoreBoard.firstChild.remove();
+    const mapTest = new Map(
+        Object.entries(gameResults).map(
+            ([key, value]) => [key, value["wins"], 
+            console.log("test", key, value),
+            scoreBoard.insertAdjacentHTML("beforeend", `<p>${key}: ${value.wins}</p>`),
+        ])
+    );
+});
 
 
 
