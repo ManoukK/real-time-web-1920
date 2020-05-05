@@ -121,7 +121,7 @@ Niet alle data heb ik nodig uit die api dus in de fetch heb ik het al opgeschoon
 ```
 Beide krijgen dezelfde benamen voor afbeeldingen, titels en id's zodat het in de rest van de code werkt voor beide partijen. 
 
-![Schermafbeelding 2020-05-03 om 11 56 47](https://user-images.githubusercontent.com/45541885/80913803-beb5c780-8d47-11ea-974f-fa37027263d0.png)
+![Schermafbeelding 2020-05-05 om 15 29 06](https://user-images.githubusercontent.com/45541885/81077266-09bd0f80-8eed-11ea-9cbc-acb6e42dc3a9.png)
 
 De link naar de coverfoto van de films/series werken net even wat anders. In de api staat wel een link naar de cover toe alleen daar moet je nog iets voorzetten zodat het goed linkt. Je moet namelijk dit stukje ervoor zetten:
 ```
