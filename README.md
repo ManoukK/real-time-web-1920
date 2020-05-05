@@ -2,7 +2,7 @@
 ### Inhoudsopgave
 * [Opdracht](#Opdracht)
 * [Concept](#Concept)
-* [Data flow](#Data-flow)
+* [Data life cycle](#Data-life-cycle)
 * [Installatie](#Installatie)
 * [API en de data](#API-en-de-data)
 * [Socket events](#Socket-events)
@@ -50,7 +50,7 @@ Als de game is beëindigd krijgen de spelers een overzicht te zien van alle film
 
 Uiteindelijk wil ik ook een feature toevoegen waarbij je kan kiezen of je een game wilt starten over films of over series want de moviedb api bevat ook series. Zo krijgen mensen meer keuze en vrijheid in de game die ze willen spelen. Ook wil ik later als feature toevoegen dat mensen een game kunnen starten met films of series uit een bepaalde genre. 
 
-### Data flow
+### Data life cycle
 ![defdefDLC](https://user-images.githubusercontent.com/45541885/81075592-da0d0800-8eea-11ea-8a5c-479a1b8379b7.png)
 
 ### Installatie
