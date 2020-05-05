@@ -142,7 +142,7 @@ Als je nu de laatste link kopieert in een nieuw tabblad krijg je de cover te zie
 <details>
 <summary>Users vult zijn username in</summary>
           
-#### socket.on('start game', async function(id)
+#### socket.on('start game', function(id)
           
 Zodra een gebruiker op de website komt en zijn username heeft ingevuld wordt deze functie uitgevoerd. Er wordt gekeken of de value van de username niet leeg is, als dat wel zo is wordt de username gezet naar ANONYMOUS. Er wordt ook gekeken of de username niet al bestaat. Stel er is al een username genaamt Piet dan wordt de tweede username die Piet heeft Piet + het nummer van de lengte van de array met gebruikersnamen die meedoen aan de game. Ik wilde er eerst een random getal achter zetten maar ook hier kan het gebeuren dat 2 mensen met dezelfde naam dezelfde nummer krijgen. 
 
@@ -155,43 +155,44 @@ gameResults[userName] = {
      };
 ```
 
-Zodra er al 1 speler zich aan heeft gemeld wordt er een fetch gedaan naar de api en wordt daaruit data opgevraagd. Dit is dan ook waarom de ‘game start’ async is. De eerste speler die in de game komt heeft de rol van het tekenen. Diegene krijgt de titel en de cover van de film te zien met de opdracht dat diegene het moet tekenen. Ondertussen als er meerdere users binnenkomen krijgen zij het bericht dat zij moeten raden. In code zien die verschillen er zo uit: 
+De eerste speler die in de game komt heeft de rol van het tekenen en hij/zij moet bepalen of de game gaat om films of series. Deze featere leg ik in een apart stukje uit. Degene die mag tekenen krijgt de titel en de cover van de film te zien met de opdracht dat diegene het moet tekenen. Ondertussen als er meerdere users binnenkomen krijgen zij het bericht dat zij moeten raden. In code zien die verschillen er zo uit: 
 
 ```js
-     if(connectedUsers.length === 1){
-       apiResults = await getData();
-       movieLeftovers = apiResults;
-       showMovie(drawingRole);
-     } else {
-       socket.emit('player role', `player role guesser`)
-     }
-     socket.emit('server message', `Welcome ${userName}!`);
-     socket.broadcast.emit('server message', `${userName} joined the game!`);
+ if(connectedUsers.length === 1){
+        const playerDrawId = Object.values(gameResults)[drawingRole].userId;
+        io.emit;
+        io.to(playerDrawId).emit('choose mode');
+      }
+      socket.emit('server message', `Welcome ${userName}!`);
+      socket.broadcast.emit('server message', `${userName} joined the game!`);
 ```
 
-In de functie showMovie heb ik dit stukje code erin die er daadwerkelijk voor zorgt dat de film data bij diegene komt die mag tekenen. Hiervoor moet je wel de id gebruiken van de users die socket zelf genereert voor jou. Dit werkt bijvoorbeeld niet met een username. 
+Dankzij dit stukje code:
+```js
+io.to(playerDrawId).emit('choose mode');
+```
+Kan ik ervoor zorgen dat alleen de eerst verbonden user mag kiezen tussen game of serie. Hiervoor moet je wel de id gebruiken van de users die socket zelf genereert voor jou. Dit werkt bijvoorbeeld niet met een username. Dat heb ik gedaan in de gameResults die je hierboven al zag met socket.id. 
+
+Daarna word er een fetch naar de api gedaan, wat ik in een ander stukje ga uitleggen en word de data doorgestuurd naar showTitle waarin ik ervoor zorg dat de data van de film of serie voor die ronde word doorgestuurd naar de juiste client.In de functie showTitle heb ik dit stukje code erin die er daadwerkelijk voor zorgt dat de film data bij diegene komt die mag tekenen. 
 
 ```js
 io.to(playerDrawId).emit('player role', currantMovieTitle, currantMovieCover);
 ```
 
-OP de client wordt er gekeken welke data wie krijgt. Dat heb ik opgelost met een if else zodat ik voor beide partijen deze functie kon combineren omdat degene die moet tekenen ook het bericht krijgt die eigenlijk alleen naar degenen moeten gaan die moeten raden. 
+Om het verschil te tonen tussen het tekenen en het raden heb ik in de html een section gemaakt met content erin voor als je de film/serie moet raden. Zodra jij degene bent die moet tekenen word die section verborgen en komt deze content in beeld. Alleen jij als tekenaar ziet dit omdat dit word verstuurd naar de user id van socket. 
 
 ```js
 socket.on('player role', function(currantMovieTitle, currantMovieCover){
-   if(currantMovieTitle === 'player role guesser'){
-       const movieImages = document.getElementById('movielist');
-       movieImages.insertAdjacentHTML("beforeend", `<h2>Guess the movie in the chat</h2>`)
-       movieImages.insertAdjacentHTML("beforeend", `<p>The first one who guess the movie right wins this round! So be quick</p>`)
-       movieImages.insertAdjacentHTML("beforeend", `<img src="https://lh3.googleusercontent.com/proxy/2holoyWbQotj033yGIjGiTE_uiEJ9w6geWd8Ksosm_lMtP3alNLxCidD3CAofyQucLAyQCyw89Dd91nuOgnYWEstnGB7aC_pVHoGBROdlA4d6Ljv58qVmX19v-ecp5Se" alt="Cover image of a questionmark" >`)
-   } else {
-       const movieImages = document.getElementById('movielist');
-       movieImages.insertAdjacentHTML("beforeend", `<h1>Draw this movie:</h1>`)
-       movieImages.insertAdjacentHTML("beforeend", `<h2>${currantMovieTitle}</h2>`)
-       movieImages.insertAdjacentHTML("beforeend", `<p>Tip: if you don't know the movie, draw the poster</p>`)
-       movieImages.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`)
-   }
-})
+    const movieInfomation = document.getElementById('drawRole');
+    while(movieInfomation.firstChild) movieInfomation.firstChild.remove();
+    movieInfomation.insertAdjacentHTML("beforeend", `<h1>It is your turn to draw</h1>`)
+    movieInfomation.insertAdjacentHTML("beforeend", `<h2>${currantMovieTitle}</h2>`)
+    movieInfomation.insertAdjacentHTML("beforeend", `<p>Tip: if you don't know how to draw it, draw the poster</p>`)
+    movieInfomation.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`)
+
+    document.getElementById('drawRole').classList.remove('locked')
+    document.getElementById('quessRole').classList.add('locked')
+});
 ```
 
 </details>
@@ -260,32 +261,86 @@ socket.on('mouseStart', start);
 
 Op deze manier worden de tekeningen doorgestuurd naar de andere users. Het is eigenlijk meer dat de data van het tekenen wordt doorgestuurd naar de andere users en dat het in hun canvas opnieuw wordt getekend. 
 
+Zodra de ronde voorbij is word het canvas geleegt voor de nieuwe tekenaar. Alle pixels binnen het canvas worden transarant zwart gemaakt. Officieel zouden ze er nog staan maar dat is voor de users niet meer te zien. 
+
+```js
+    context.clearRect(0, 0, canvas.width, canvas.height);
+```
+
 </details>
 
 <details>
 <summary>Spelers proberen de film te raden</summary>
           
 #### socket.on('chat message', function)
-          
-In de chat functie wordt bij elk bericht die wordt verstuurd gekeken of daar het antwoord tussen zit van de film titel. Eerst wordt het bericht en de titel van de film omgezet naar hoofdletters zodat daar geen problemen in kunnen zitten. Vervolgens word er met deze if statement gekeken of de username van degene die raad niet overeenkomt met degene die aan het tekenen is. Dan moet ook het bericht overeenkomen met de titel.
+In de chat functie wordt bij elk bericht die wordt verstuurd gekeken of daar het antwoord tussen zit van de film/serie titel. Eerst wordt het bericht en de titel van de film/serie omgezet naar hoofdletters zodat daar geen problemen in kunnen zitten. Vervolgens word er met deze if statement gekeken of de username van degene die raad niet overeenkomt met degene die aan het tekenen is. Dan moet ook het bericht overeenkomen met de titel.
 ```js
-if(drawPlayer !== userName && msgUpper === movieTitleUpper)
+ if(drawPlayer !== userName && msgUpper === upperCaseTitle)
 ```
 
 Als deze twee allebei true zijn krijgt degene die raad 1 punt en komt de titel van de film in een array te staan van degene die het moest tekenen. 
+
 ```js
-    let setPoint = gameResults[userName].wins++;
-       const setMovieTitle = gameResults[drawPlayer].drawn;
-       setMovieTitle.push(currantMovieTitle);
+    let setPointGuesser = gameResults[userName].wins++;
+      const setTitle = gameResults[drawPlayer].drawn;
+      setTitle.push(currantTitle);
 ```
 
-Als een van de twee false is wordt het bericht gewoon verzonden naar de andere users. 
+Zodra dat is gebeurd komt er een pop-up van de geraden titel en door wie het is geraden. Dat word getriggerd dankzij deze io.emit
+
+```js
+io.emit('player guessed movie', currantTitle, currantCover, userName);
+```
+Client side ziet dat er dan zo uit. Een aantal html elementen worden verborgen of getoont. Zo krijg je het pop-up effect. Eerst word ook de content in de pop-up geleegt zodat je niet de titels van de vorige rondes erin ziet staan. Hier word ook het canvas weer schoon gemaakt en er komt een event listener op de knop waarmee je weer verder kan gaan. 
+
+```js
+socket.on('player guessed movie', function(currantMovieTitle, currantMovieCover, userName){
+    const showMovie = document.getElementById('informationAboutMovie');
+    const showWinner = document.getElementById('informationTextAboutRound');
+
+    //Hoe je een html element leeg maakt in javascript: 
+    //https://stackoverflow.com/questions/5744233/how-to-empty-the-content-of-a-div
+    while(showWinner.firstChild) showWinner.firstChild.remove();
+    while(showMovie.firstChild) showMovie.firstChild.remove();
+
+    showWinner.insertAdjacentHTML("beforeend", `<h1>The movie was: <br> ${currantMovieTitle}</h1>`);
+    showWinner.insertAdjacentHTML("beforeend", `<h2>${userName} is the winner of this round!</h2>`);
+    showWinner.insertAdjacentHTML("beforeend", `<p>${userName} gets 1 point</p>`);
+    showMovie.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`);
+    
+    document.getElementById('roundEnd').classList.remove('locked');
+    document.getElementById('game').classList.add('locked');
+
+    document.getElementById('quessRole').classList.remove('locked');
+    document.getElementById('drawRole').classList.add('locked');
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    const scoreBoard = document.getElementById("scoreBoard");
+    while(scoreBoard.firstChild) scoreBoard.firstChild.remove();
+
+    clickNextRound();
+});
+```
+
+
+Dan heb je ook nog de kans dat niemand de titel goed weet te raden. Daarvoor had ik bedacht dat er met een else if word gekeken of de username overeenkomt met de naam van de tekenaar en of de titel overeenkomt met het chat bericht. Als dat zo is krijgt niemand een punt en word de ronde afgelopen. 
+
+```js
+else if (drawPlayer === userName && msgUpper === upperCaseTitle)
+```
+
+In dit statement word ook hier de pop-up getriggert. Alleen word de username vervangen voor Nobody. De rest van de content blijft wel hetzelfde want het blijft wel leuk om de titel en cover te laten zien. 
+
+```js
+io.emit('player guessed movie', currantTitle, currantCover, `Nobody`);
+```
+
+Als een van de twee statements false is wordt het bericht gewoon verzonden naar de andere users en jijzelf. 
 
 ```js
        io.emit('chat message', `${userName}: ${msg}`, randomColor);
 ```
-
-Ik wil ook nog een statement maken dat als de users die moest tekenen de titel in de chat zegt dat de ronde dan is afgelopen en dat niemand punten krijgt. Dat is misschien niet de netste oplossing maar voor nu wel de snelste. 
 
 </details>
 
@@ -328,10 +383,35 @@ Daarna stuur ik ook een bericht als een user de game verlaat. Dit stuur ik naar 
 ```js
 socket.emit('server message', `Welcome ${userName}!`);
 socket.broadcast.emit('server message', `${userName} joined the game!`);
-io.emit('server message', `${userName} guessed the movie! It was: ${movieTitleUpper}`);
+io.emit('server message', `${userName} guessed the movie! It was: ${upperCaseTitle}`);
 socket.broadcast.emit('server message', `${userName} has left the game!`);
 ```
 </details>
+
+<details>
+<summary>Persoonlijke berichten sturen naar 1 gebruiker</summary>
+
+#### io.to(playerDrawId).emit('player role', currantTitle, currantCover);
+Dankzij io.to kan ik berichten sturen die voor 1 user bedoelt zijn. Hierbij moet je wel gebruik maken van de id die socket zelf meestuurt zodra er een user online komt. Ik heb die op deze manier opgeslagen in de meta data van de game. 
+
+```js
+  gameResults[userName] = { 	
+        userId: socket.id,
+        wins: 0,
+        drawn: [],
+      };
+```
+
+In het voorbeeld in de titel: io.to(playerDrawId).emit('player role', currantTitle, currantCover); Stuur ik hier de data door naar de gebruiker die aan de beurd is om te tekenen. Zo kon ik onderscheid maken tussen de rollen van het tekenen en het raden en kon ik er ook voor zorgen dat users die moeten raden niet per ongeluk die informatie te zien krijgen. 
+
+De io.to functie van socket heb ik ook gebruikt voor het kiezen van een modus van de game, dus of iedereen films of series moeten raden en tekenen. Dat stukje code ziet er zo uit. Dit word eenmalig verzonden, aan het begin van de game. Op deze manier heb ik het probleem getackeld voor als er meerdere mensen de game modus konden kiezen. In dit geval is de eerste die op de website komt ook gelijk degene die begint met tekenen daarom kon ik het op deze manier (playerDrawId) makkeijk aanspreken.
+
+```js
+io.to(playerDrawId).emit('choose mode');
+```
+
+</details>
+
 
 
 ### Features
