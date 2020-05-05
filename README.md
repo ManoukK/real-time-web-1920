@@ -140,7 +140,7 @@ Als je nu de laatste link kopieert in een nieuw tabblad krijg je de cover te zie
 
 ### Socket events 
 <details>
-<summary>Users vult zijn username in</summary>
+<summary>User vult zijn username in</summary>
           
 #### socket.on('start game', function(id)
           
