@@ -20,7 +20,14 @@ Mijn concept is een game waarbij de ene speler een film krijgt die hij moet teke
 
 Iedereen kan in de chat de film raden. Elke ronde duurt 1 minuut (als ik merk dat het te kort is word dit langer) In die 1 minuut moet de tekenaar tekenen en de andere raden. Je kan in de chat raden door gewoon de titels van de films te typen. Als jij het goede antwoord hebt word het bericht onzichtbaar voor de anderen en krijgt iedereen een melding dat jij het goed hebt. Wat er getekend wordt krijgt iedereen live te zien zodat je gelijk kan raden als je zou willen. Na 1 minuut start de nieuwe ronde en worden de punten van de vorige ronde geupdate. 
 
-De punten werken als volgt: Als jij als film-rader de film goed raad krijg jij 2 punten en de tekenaar 1 punt. Als jij het niet raad krijgt niemand een punt. Als de tekenaar de film niet weet die hij moet tekenen en dus skipt dan krijgt degene die moet raden 1 punt. Als je met drie of meer spelers bent en 1 iemand raad het goed dan krijgt de tekenaar alsnog 1 punt. Dit geldt hetzelfde voor als meerdere mensen het goed raden. De tekenaar krijgt dan nog steeds 1 punt. 
+De punten had ik alsvolgd in gedachte: 
+- Eerste speler die het goed raad: 3 punten
+- Tweede speler die het goed raad: 2 punten
+- Derde speler die het goed raad: 1
+- Vierde speler of hoger die het goed raad: 0 punten
+- Speler waarvan zijn tekening is geraden: 2 punten
+- Speler waarvan zijn tekening niet is geraden: 0 punten 
+- Speler die het niet raad: 0 punten
 
 Als je met z’n tweeën speelt dan is de rol van de tekenaar en rader steeds om en om. Als je met drie mensen of meer speelt dan gaat het een rijtje af. Bijvoorbeeld dit is de volgorde nu:
 - Piet
@@ -304,7 +311,7 @@ socket.broadcast.emit('server message', `${userName} has left the game!`);
 ### Features
 - [ ] Voordat de game start spelers laten kiezen tussen films of series.
 - [ ] Voordat de game start spelers laten kiezen tussen genres.
-- [ ] Puntentelling wie het snelst raad krijgt meer punten en wie als laatste raad het minst.
+- [ ] Puntentelling wie het snelst raad krijgt meer punten en wie als laatste raad het minst. (zie concept)
 - [ ] Timer toevoegen van hoelang elke ronde duurt en zodra de timer af gaat begint automatisch de volgende ronde. 
 - [ ] Gebruikers een account laten aanmaken zodat de hun scores van alle games worden bijhouden. Je ziet dan in totaal hoeveel films je moest raden en hoeveel je daarvan goed hebt geraden en je ziet hoeveel tekeningen je hebt gemaakt. 
 - [ ] De benoemde data van het punt hierboven opslaan in een database.
