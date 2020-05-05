@@ -510,7 +510,8 @@ io.to(playerDrawId).emit('choose mode');
 - [ ] Gebruikers een account laten aanmaken zodat de hun scores van alle games worden bijhouden. Je ziet dan in totaal hoeveel films je moest raden en hoeveel je daarvan goed hebt geraden en je ziet hoeveel tekeningen je hebt gemaakt. 
 - [ ] De benoemde data van het punt hierboven opslaan in een database.
 - [ ] Benamingen in code generiek maken in plaats van movieTitles moet het titles worden.
-- [ ] Eind pagina met eind score 
+- [ ] Eind pagina met eind score.
+- [ ] Rooms aanmaken zodat er meerdere games tegelijkertijd gespeelt kunnen worden.
 
 ### Bronnen
 - Cheat sheet van socket.io: https://socket.io/docs/emit-cheatsheet/
