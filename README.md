@@ -315,6 +315,7 @@ socket.broadcast.emit('server message', `${userName} has left the game!`);
 - [ ] Timer toevoegen van hoelang elke ronde duurt en zodra de timer af gaat begint automatisch de volgende ronde. 
 - [ ] Gebruikers een account laten aanmaken zodat de hun scores van alle games worden bijhouden. Je ziet dan in totaal hoeveel films je moest raden en hoeveel je daarvan goed hebt geraden en je ziet hoeveel tekeningen je hebt gemaakt. 
 - [ ] De benoemde data van het punt hierboven opslaan in een database.
+- [ ] Benamingen in code generiek maken in plaats van movieTitles moet het titles worden
 
 ### Bronnen
 - Cheat sheet van socket.io: https://socket.io/docs/emit-cheatsheet/
