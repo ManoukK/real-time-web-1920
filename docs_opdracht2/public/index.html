@@ -7,8 +7,13 @@
     <link rel="stylesheet" type="text/css" href="/css/styles.css">
 </head>
 <body>
+    <section id="gameMode" class="locked">
+        <h1>Choose a game mode</h1>
+        <button id="gameModeMovie">Movies</button>
+        <button id="gameModeSerie">Series</button>
+    </section>
 
-    <form id="usernameForm" action="" >
+    <form id="usernameForm" action="">
         <h2>Enter your name to play the game</h2>
         <div>
             <input id="usernameInput" autocomplete="off" type="text" placeholder="What is your name?"/>
@@ -29,8 +34,10 @@
         </section>
 
         <section id="quessRole" >
-            <h2>Guess the movie in the chat</h2>
-            <p>The first one who guess the movie right wins this round! So be quick</p>
+            <article>
+                <h2>Guess the title in the chat</h2>
+                <p>The first person to guess the title wins this round. So be quick!</p>
+            </article>
             <img src="/img/guestionmark.png" alt="Cover image of a questionmark" >
         </section>
 

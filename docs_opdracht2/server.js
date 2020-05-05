@@ -22,17 +22,29 @@ app.get('/', function(req, res){
 let connectedUsers = [];
 let gameResults = {};
 let apiResults = [];
-let movieLeftovers = [];
-let randomMovie = [];
+let leftoversToDraw = [];
+let titleToDrawThisRound = [];
 let drawingRole = 0;
 
 io.on('connection', function(socket){ 
   //https://dev.to/akhil_001/generating-random-color-with-single-line-of-js-code-fhj
   const randomColor = '#'+Math.floor(Math.random()*16777215).toString(16);
-
   let userName = "ANONYMOUS";
 
-  socket.on('start game', async function(id){
+  socket.on('game mode', async function(gameMode){
+    if (gameMode === "movie"){
+        apiResults = await getMovieData();
+        leftoversToDraw = apiResults;
+        showTitle(drawingRole);
+
+    }else if (gameMode === "serie"){
+      apiResults = await getSerieData();
+      leftoversToDraw = apiResults;
+      showTitle(drawingRole);
+    }
+  })
+
+  socket.on('start game', function(id){
 
       const upperCaseUsername = id.toUpperCase();
 
@@ -58,58 +70,37 @@ io.on('connection', function(socket){
         drawn: [],
       };
 
-      io.emit('score board', gameResults);
+      io.emit('score board', gameResults, randomColor);
 
       if(connectedUsers.length === 1){
-        apiResults = await getData();
-        movieLeftovers = apiResults;
- 
-        showMovie(drawingRole);
-      } else {
-        // socket.emit('player role', `player role guesser`)
+        const playerDrawId = Object.values(gameResults)[drawingRole].userId;
+        io.to(playerDrawId).emit('choose mode');
       }
       socket.emit('server message', `Welcome ${userName}!`);
       socket.broadcast.emit('server message', `${userName} joined the game!`);
-
-      // let userNameTest = Object.keys(gameResults)[userName];
-      // const playerDrawId = Object.values(gameResults)[drawingRole].wins;
-      // console.log(gameResults);
-      // var result = gameResults.map(a => a.wins);
-      // console.log(result);
-
-      // console.log("username", userName)
-      // let findUserIndex = connectedUsers.indexOf(userName);
-      // console.log("find", find)
-
-      // const startingPoint = 0
-      // let findUserIndex = connectedUsers.indexOf(userName);
-      // io.emit('score board', gameResults, findUserIndex);
   });
 
   socket.on('chat message', function(msg){   
-    // movieTitleCheck(msg, gameResults); 
-    // console.log(gameResults);
+    console.log(gameResults);
+    console.log(leftoversToDraw);
     let drawPlayer = Object.keys(gameResults)[drawingRole];
-    const currantMovieTitle = Object.values(movieLeftovers)[0].movieTitle;
-    const movieTitleUpper = currantMovieTitle.toUpperCase();
+    const currantTitle = Object.values(leftoversToDraw)[0].title;
+    const upperCaseTitle = currantTitle.toUpperCase();
     const msgUpper = msg.toUpperCase();
 
     //hoe je een if statement schrijft met 2 waardes die true moeten zijn.
     //https://stackoverflow.com/questions/8710442/how-to-specify-multiple-conditions-in-an-if-statement-in-javascript
-    if(drawPlayer !== userName && msgUpper === movieTitleUpper){
+    if(drawPlayer !== userName && msgUpper === upperCaseTitle){
       io.emit('chat message', `${userName}: ${msg}`, randomColor, gameResults);
-      io.emit('server message', `${userName} guessed the movie! It was: ${movieTitleUpper}`);
+      io.emit('server message', `${userName} guessed the movie! It was: ${upperCaseTitle}`);
 
-      const currantMovieTitle = Object.values(movieLeftovers)[0].movieTitle;
-      const currantMovieCover = Object.values(movieLeftovers)[0].movieImage;
-      io.emit('player guessed movie', currantMovieTitle, currantMovieCover, userName);
+      const currantTitle = Object.values(leftoversToDraw)[0].title;
+      const currantCover = Object.values(leftoversToDraw)[0].image;
+      io.emit('player guessed movie', currantTitle, currantCover, userName);
 
-      let setPoint = gameResults[userName].wins;
-      setPoint += 2;
-
-      console.log(setPoint);
-      const setMovieTitle = gameResults[drawPlayer].drawn;
-      setMovieTitle.push(currantMovieTitle);
+      let setPointGuesser = gameResults[userName].wins++;
+      const setTitle = gameResults[drawPlayer].drawn;
+      setTitle.push(currantTitle);
 
       io.emit('score board', gameResults);
 
@@ -119,22 +110,22 @@ io.on('connection', function(socket){
         drawingRole++;
       }
 
-      movieLeftovers.splice(0, 1);
-      showMovie(drawingRole);
+      leftoversToDraw.splice(0, 1);
+      showTitle(drawingRole);
 
-      randomMovie.length = 0;
+      titleToDrawThisRound.length = 0;
 
-    } else if (drawPlayer === userName && msgUpper === movieTitleUpper){
+    } else if (drawPlayer === userName && msgUpper === upperCaseTitle){
       io.emit('chat message', `${userName}: ${msg}`, randomColor, gameResults);
-      io.emit('server message', `Nobody guessed the movie... It was: ${movieTitleUpper}`);
+      io.emit('server message', `Nobody guessed the movie... It was: ${upperCaseTitle}`);
 
-      const currantMovieTitle = Object.values(movieLeftovers)[0].movieTitle;
-      const currantMovieCover = Object.values(movieLeftovers)[0].movieImage;
-      io.emit('player guessed movie', currantMovieTitle, currantMovieCover, `Nobody`);
+      const currantTitle = Object.values(leftoversToDraw)[0].title;
+      const currantCover = Object.values(leftoversToDraw)[0].image;
+      io.emit('player guessed movie', currantTitle, currantCover, `Nobody`);
 
 
-      const setMovieTitle = gameResults[drawPlayer].drawn;
-      setMovieTitle.push(currantMovieTitle);
+      const setTitle = gameResults[drawPlayer].drawn;
+      setTitle.push(currantTitle);
 
       if(drawingRole === (connectedUsers.length - 1)){
         drawingRole = 0;
@@ -142,10 +133,10 @@ io.on('connection', function(socket){
         drawingRole++;
       }
 
-      movieLeftovers.splice(0, 1);
-      showMovie(drawingRole);
+      leftoversToDraw.splice(0, 1);
+      showTitle(drawingRole);
 
-      randomMovie.length = 0;
+      titleToDrawThisRound.length = 0;
 
     } else {
       io.emit('chat message', `${userName}: ${msg}`, randomColor, gameResults);
@@ -182,27 +173,18 @@ io.on('connection', function(socket){
   });
 
   socket.on('disconnect', function(){
-    console.log(connectedUsers);
     socket.broadcast.emit('server message', `${userName} has left the game!`);
+    
     let userPosition = connectedUsers.indexOf(userName);
-    console.log(gameResults)
-    // connectedUsers.splice(userPosition, 1);
     if (userPosition >= 0){
       connectedUsers.splice(userPosition, 1);
 
-      // let removeUser = Object.keys(gameResults)[userPosition];
-      // delete removeUser;
-
       delete gameResults[userName];
-
-      // gameResults.splice(userPosition, 1);
     }
-    console.log("after delete", gameResults);
-    console.log(connectedUsers);
     io.emit('score board', gameResults);
   });
 
-  async function getData(){
+  async function getMovieData(){
     const key = process.env.API_KEY;
     const randomPage = Math.floor((Math.random() * 10) +1);
     const listSortingSetting = 'popularity.desc'  
@@ -213,14 +195,16 @@ io.on('connection', function(socket){
             return response.json();
         })
         .then(function(results) {
+          console.log(results)
             return results.results;
+
         })
         .then(results => {
           return results.map(results => {
               return {
-                  movieTitle: results.title,
-                  movieImage: results.poster_path,
-                  movieID: results.id,
+                  title: results.title,
+                  image: results.poster_path,
+                  id: results.id,
               }
             })
           })
@@ -231,16 +215,40 @@ io.on('connection', function(socket){
         return data;
     }
 
-  function showMovie(drawingRole){
+  async function getSerieData(){
+    const key = process.env.API_KEY;
+    const randomPage = Math.floor((Math.random() * 10) +1);
+    const listSortingSetting = 'popularity.desc'  
+    const url = `https://api.themoviedb.org/3/discover/tv?api_key=${key}&language=en-US&sort_by=${listSortingSetting}&include_adult=false&include_video=false&page=${randomPage}`
+
+    const data = await fetch(url)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(results) {
+            return results.results;    
+        })
+        .then(results => {
+          return results.map(results => {
+              return {
+                  title: results.name,
+                  image: results.poster_path,
+                  id: results.id,
+              }
+            })
+          })
+        .catch(function(err) {
+            console.log(err);
+        });
+
+        return data;
+  };
+
+  function showTitle(drawingRole){
     const playerDrawId = Object.values(gameResults)[drawingRole].userId;
-    const currantMovieTitle = Object.values(movieLeftovers)[0].movieTitle;
-    const currantMovieCover = Object.values(movieLeftovers)[0].movieImage;
-    io.emit;
+    const currantTitle = Object.values(leftoversToDraw)[0].title;
+    const currantCover = Object.values(leftoversToDraw)[0].image;
 
-    io.to(playerDrawId).emit('player role', currantMovieTitle, currantMovieCover);
+    io.to(playerDrawId).emit('player role', currantTitle, currantCover);
   }
-})
-
-app.get('/test', function(req, res){
-  res.sendFile(__dirname + '/public/test.html');
 });

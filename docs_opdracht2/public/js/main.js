@@ -129,33 +129,13 @@ socket.on('chat message', function(msg, randomColor, gameResults){
 socket.on('player role', function(currantMovieTitle, currantMovieCover){
     const movieInfomation = document.getElementById('drawRole');
     while(movieInfomation.firstChild) movieInfomation.firstChild.remove();
-    movieInfomation.insertAdjacentHTML("beforeend", `<h1>Draw this movie:</h1>`)
+    movieInfomation.insertAdjacentHTML("beforeend", `<h1>It is your turn to draw</h1>`)
     movieInfomation.insertAdjacentHTML("beforeend", `<h2>${currantMovieTitle}</h2>`)
-    movieInfomation.insertAdjacentHTML("beforeend", `<p>Tip: if you don't know the movie, draw the poster</p>`)
+    movieInfomation.insertAdjacentHTML("beforeend", `<p>Tip: if you don't know how to draw it, draw the poster</p>`)
     movieInfomation.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`)
 
     document.getElementById('drawRole').classList.remove('locked')
     document.getElementById('quessRole').classList.add('locked')
-    
-
-    // if(currantMovieTitle === 'player role guesser'){
-    //     document.getElementById('quessRole').classList.remove('locked')
-    //     document.getElementById('drawRole').classList.add('locked')
-    //     // const movieImages = document.getElementById('movielist');
-    //     // movieImages.insertAdjacentHTML("beforeend", `<h2>Guess the movie in the chat</h2>`)
-    //     // movieImages.insertAdjacentHTML("beforeend", `<p>The first one who guess the movie right wins this round! So be quick</p>`)
-    //     // // movieImages.insertAdjacentHTML("beforeend", `<img src="https://github.com/ManoukK/real-time-web-1920/blob/master/docs_opdracht2/public/img/guestionmark.png" alt="Cover image of a questionmark" >`)
-    //     // movieImages.insertAdjacentHTML("beforeend", `<img src="../img/guestionmark.png" alt="Cover image of a questionmark" >`)
-    // } else {
-    //     const movieImages = document.getElementById('drawRole');
-    //     movieImages.insertAdjacentHTML("beforeend", `<h1>Draw this movie:</h1>`)
-    //     movieImages.insertAdjacentHTML("beforeend", `<h2>${currantMovieTitle}</h2>`)
-    //     movieImages.insertAdjacentHTML("beforeend", `<p>Tip: if you don't know the movie, draw the poster</p>`)
-    //     movieImages.insertAdjacentHTML("beforeend", `<img src="https://image.tmdb.org/t/p/w500${currantMovieCover}" alt="Cover image of the movie: ${currantMovieTitle}" >`)
-
-    //     document.getElementById('drawRole').classList.remove('locked')
-    //     document.getElementById('quessRole').classList.add('locked')
-    // }
 });
 
 socket.on('player guessed movie', function(currantMovieTitle, currantMovieCover, userName){
@@ -183,10 +163,10 @@ socket.on('player guessed movie', function(currantMovieTitle, currantMovieCover,
     const scoreBoard = document.getElementById("scoreBoard");
     while(scoreBoard.firstChild) scoreBoard.firstChild.remove();
 
-    click();
+    clickNextRound();
 });
 
-function click(){
+function clickNextRound(){
     const buttonNextRound = document.getElementById('goToNextRound');
     buttonNextRound.addEventListener("click", function(){
         document.getElementById('game').classList.remove('locked');
@@ -194,11 +174,11 @@ function click(){
     });
 };
 
-
 socket.on('score board', function(gameResults){
     const scoreBoard = document.getElementById("scoreBoard");
     while(scoreBoard.firstChild) scoreBoard.firstChild.remove();
-    const mapTest = new Map(
+    scoreBoard.insertAdjacentHTML("beforeend", `<h2>Scoreboard</h2>`);
+    const score = new Map(
         Object.entries(gameResults).map(
             ([key, value]) => [key, value["wins"], 
             console.log("test", key, value),
@@ -207,8 +187,22 @@ socket.on('score board', function(gameResults){
     );
 });
 
+socket.on('choose mode', function(){
+    document.getElementById('gameMode').classList.remove('locked');
+    document.getElementById('usernameForm').classList.add('locked');
+    document.getElementById('game').classList.add('locked');
 
-
-
-
-
+    const chooseMovie = document.getElementById('gameModeMovie')
+    chooseMovie.addEventListener('click', function() {
+        document.getElementById('game').classList.remove('locked');
+        document.getElementById('gameMode').classList.add('locked');
+        socket.emit("game mode", "movie");
+    })
+    
+    const chooseSerie = document.getElementById('gameModeSerie')
+    chooseSerie.addEventListener('click', function() {
+        document.getElementById('game').classList.remove('locked');
+        document.getElementById('gameMode').classList.add('locked');
+        socket.emit("game mode", "serie");
+    })
+})
